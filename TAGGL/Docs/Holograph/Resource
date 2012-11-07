@@ -1,0 +1,45 @@
+
+Resource Library Header
+-----------------------
+00/03 = pointer to first resource structure
+04/07 = pointer to last resource structure
+08/11 = rs% of misc resource windows structure
+
+Resource Structure Header
+-------------------------
+00/03 = pointer to next resource structure
+04/07 = pointer to prev resource structure
+08/11 = pointer to first resource window
+12/15 = pointer to last resource window
+16/19 = pointer to pathname of resource
+20/23 = pointer to leafname of resource
+24/27 = pointer to resource item for application list
+28/31 = modified flag
+32/35 = pointer to startup system name
+
+Resource List Header
+--------------------
+00/03 = pointer to next resource list
+04/07 = pointer to prev resource list
+08/11 = pointer to first item on list
+12/15 = pointer to last item on list
+16/19 = reference (=mwref%)
+20/23 = pointer to item 'selected' for menu
+24/27 = menu reference word
+28/31 = number of items selected
+32/35 = window handle
+
+Resource Item
+-------------
+00/03 = pointer to next item
+04/07 = pointer to prev item
+08/11 = pointer to item name
+12/15 = pointer to sprite name
+16/19 = pointer to actual data              (colour/ptr to sprite name)
+20/23 = filetype                            (vector/sprite flag)
+24/27 = number of items                     (0)
+28/31 = size of data                        (0)
+32/35 = sub resource list header id to open
+36/39 = flags
+        bit 0 = selected
+ 

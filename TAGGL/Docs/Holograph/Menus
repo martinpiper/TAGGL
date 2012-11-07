@@ -1,0 +1,32 @@
+
+Menu Structure Format
+---------------------
+00/03 = pointer to next menu structure
+04/07 = pointer to prev menu structure
+08/11 = pointer to first menu (main menu)
+12/15 = pointer to last menu
+16/19 = reference word
+20/23 = flags
+        bit 0 = kill on close
+
+Menu Format
+-----------
+00/03 = pointer to next menu
+04/07 = pointer to prev menu
+08/11 = pointer to first menu item
+12/15 = pointer to last menu item
+16/19 = reference number ( <&8000 )
+20/23 = number of items
+24/27 = pointer to title
+
+Menu Item
+---------
+00/03 = pointer to next in chain
+04/07 = pointer to prev in chain
+08/11 = pointer to item text
+12/15 = submenu number (or window handle)
+16/19 = reference word
+20/23 = item flags
+        bit 0 = kill item text when deleting
+        bit 1 = shade item
+        bit 2 = tick item

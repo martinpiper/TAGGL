@@ -1,0 +1,34 @@
+--------------------------------------------
+TAG Engine Compiled System File Format V1.00
+(C)1993 Element 114 Software
+--------------------------------------------
+
+Lightsource data is compiled seperately into the
+resource data block.
+
+System Header
+=============
+00/23 : viewpoint (px,py,pz, rx,ry,rz)
+   24+: system worlds
+
+System World
+============
+00/03 = data number of world/misc resource   (-1 = last) (-3=lightsource)
+
+World/Misc Data
+---------------
+   04 : world/misc flag (0=world 1=misc)
+   05 : filled flag     (0=wireframe 1=filled)
+06/07 : rfu
+08/11 : x position offset
+12/15 : y position offset
+16/19 : z position offset
+20/23 : group number
+
+Lightsource Data
+----------------
+   04 : type (0=none,1=viewpoint,2=remote)
+   05 : z shift
+06/08 : ambient light levels (r/g/b)
+09/11 : maximum light levels (r/b/b)
+12/23 : remote lightsource position

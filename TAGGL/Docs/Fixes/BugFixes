@@ -1,0 +1,39 @@
+-----------------------
+Bug Fixes - From Jan 95
+-----------------------
+
+10/02/95 - R7 (world ptr) now contains correct value on collision event
+
+10/02/95 - Blank Objects Crashed TAG if added to world
+
+10/02/95 - Single point scaled sprites have zero bounding box size
+           Code fix is huge, so use a vertex at the edge of the sprite!
+
+27/02/95 - Side of screen removal dodgy in calclib!
+           Fixed when xds code was tested.
+
+30/04/95 - RotateObject call returning incorrect z value
+
+01/05/95 - Collision vertex numbers incorrect for second object.
+
+16/05/95 - music load (mus_load) crashed if music file was not found.
+
+28/05/95 - Non word length resources , not compiling at correct offset.
+
+02/06/95 - Add template and interrupt problems have been fixed.
+         - Interrupts are now always enabled during all frame type events.
+
+28/06/95 - Collision Enable Flag
+         - If flag was set, collisions were checked at 50fps regardless of the
+           speed setting.
+
+01/10/95 - Multi-loaded Applications - Heap error if application closed down
+           whilst multi-loaded app running.
+
+02/01/96 - Fixes done for loading & Saving lightsourcing info.  Okay in V1.51.
+
+27/06/96 - Removed self-modifying code from texture mapping to enable
+           it to work on StrongArm processor!
+
+27/06/96 - Bug with texture maps not displaying in editor appears to have
+           gone!

@@ -1,0 +1,52 @@
+REM >StartColl
+REM ********************************
+REM **    Collision Activation    **
+REM **    (C)1994 TBA Software    **
+REM ** Programming by Alan Peters **
+REM ********************************
+
+f$="StartColl"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD 0
+
+.frm
+TEQ R0,#4:BEQ frm_sys_startup
+MOV R15,R14
+
+.frm_sys_startup
+LDR R0,[R1,#0]
+MOV R1,#&8100
+STR R0,[R1,#&6C]
+MOV R15,R14
+
+; **********************
+; ** Frame Event Code **
+; **********************
+
+
+]
+NEXT
+ENDPROC

@@ -1,0 +1,41 @@
+-------------------------
+TAG Runtime System Format
+(C)1995 TBA Software
+-------------------------
+
+Live Data Format
+================
+00/03 : ptr to first system world (0=none)
+04/07 : ptr to last system world  (0=none)
+08/11 : viewpoint position x
+12/15 : viewpoint position y
+16/19 : viewpoint position z
+20/23 : viewpoint rotation x
+24/27 : viewpoint rotation y
+28/31 : viewpoint rotation z
+   32 : light source type (bit0=viewpoint,bit1=remote,bit7=all templates)
+   33 : depth shade shift value
+34/36 : r/g/b ambient light level (TAG1 uses red level only)
+37/39 : r/g/b maximum light level (TAG1 uses red level only)
+40/43 : light source position x   (only for type 2 source)
+44/47 : light source position y   (only for type 2 source)
+48/51 : light source position z   (only for type 2 source)
+
+System World
+============
+00/03 : ptr to next in chain              (0=last)
+04/07 : ptr to prev in chain              (0=first)
+08/11 : ptr to world linklist header      (or ptr to misc resource data)
+   12 : type flag                         (0=misc      1=world)
+   13 : filled flag                       (0=wireframe 1=filled)
+   14 : flags                             (bit0 = no viewpoint) (bit1 = backdrop)
+   15 : 0
+16/19 : x position offset
+20/23 : y position offset
+24/27 : z position offset
+28/31 : group number
+
+Notes
+=====
+1) To calculate the world resource header ptr subtract 8 from the world
+   linklist header ptr.

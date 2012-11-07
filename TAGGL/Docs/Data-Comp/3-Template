@@ -1,0 +1,23 @@
+-----------------------------------------
+TAG Engine Compiled Template Format V1.00
+(C)1994 TBA Software
+-----------------------------------------
+
+Tempate Header
+==============
+00/03 = number of depth list entries
+        (bit31 = light source flag)
+
+Depth List Entry
+----------------
+00/03 : compiled object number (-1=last)
+04/07 : depth
+
+Handler Header
+--------------
+00/03 : number of handler headers
+
+Handler Header
+--------------
+00/03 : compiled handler number (-1=last)
+04/15 : data words (1-4)

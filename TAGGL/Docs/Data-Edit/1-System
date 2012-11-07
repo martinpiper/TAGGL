@@ -1,0 +1,25 @@
+---------------------------------------
+Game Editor Internal World Format V1.01
+(C)1993 Element 114 Software
+---------------------------------------
+
+System Header
+=============
+00/03 : pointer to first system world (0=none)
+04/07 : pointer to last system world  (0=none)
+08/31 : viewpoint (px,py,pz, rx,ry,rz)
+32/51 : lightsource
+
+System World
+============
+00/03 : pointer to next in chain               (0=last)
+04/07 : pointer to prev in chain               (0=first)
+08/11 : pointer to world/dem name
+   12 : world/dem fag (0=dem 1=world)
+   13 : filled flag   (0=wireframe 1=filled)
+   14 : flags         (bit0 = no viewpoint)
+14/15 : rfu
+16/19 : x position offset
+20/23 : y position offset
+24/27 : z position offset
+28/31 : group number

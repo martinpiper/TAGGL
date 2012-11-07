@@ -1,0 +1,22 @@
+----------------------------------------------
+Game Editor Compiled File Header
+(C)1994 Element 114 Software
+----------------------------------------------
+
+00/03 = id - TAGE
+04/07 = version number
+08/11 = total number of resources
+12/15 = total size of compiled resources
+16/31 = plot data buffer sizes required
+32/35 = vanishing point
+36/39 = rfu
+40/47 = compressed block sizes
+48/63 = startup system
+64/95 = number of resouce data items for type (0-7)
+96+   = resource data headers
+
+Resource Data Header
+--------------------
+00/03 = offset to resource (from start of resource data block)
+04/15 = reseved
+16/31 = label name

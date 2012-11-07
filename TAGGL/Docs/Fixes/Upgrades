@@ -1,0 +1,112 @@
+Upgrades - From Jan 95
+----------------------
+
+10/02/95 - Add Template Ageing counter
+--------------------------------------
+Ageing count added to add template so handlers can correctly
+calculate their initial position when added at runtime.
+
+10/02/95 - Mode Switching
+-------------------------
+Support added for variable screen sizes and real time scaling
+of 240 to 480 lines for MODE 49 users.
+
+11/02/95 - Overlaying Graphics in Indirected Screen mode
+--------------------------------------------------------
+Between frames event gives the actual screen ptr and not
+the indirected screen ptr, so that sprites may be overlayed
+onto the indirected screen.
+
+11/02/95 - Relocation of Systems and Worlds
+-------------------------------------------
+Worlds not relocated at startup making 'streaming' from one
+world to another difficult.  Relocation is now done at startup.
+Should not affect any existing code.
+
+11/02/95 - Add World Call (add_template - type 0)
+-------------------------------------------------
+Add world function has been added.   The new world is merged with
+an existing one.  Interrupts are toggle on and off between each
+addition to the world to enble large worlds to be added if required.
+
+20/02/95 - Auto updating of handlers into Holograph
+---------------------------------------------------
+Handler code can be automatically loaded into a holograph application
+by using a wimp message when compiling is complete.
+
+20/02/95 - Extended Data Structure support added to world template header.
+--------------------------------------------------------------------------
+An extended data structure (xds) may be created by a handler to provide
+additional data for TAG to use, including simple sprite animation on
+an object, for explosions, or engines, etc.
+
+01/03/95 - Polygon clipper call added to TAG at &8158.
+------------------------------------------------------
+Handler can use polygon clipper within TAG.  The currently clipping
+rectangle is used so this may be changed beforehand to clip
+to any required window.
+
+03/05/95 - Extra Command Line Switches
+--------------------------------------
+-single : runs in single task mode without desktop task
+-auto   : runs as task but auto starts
+
+29/05/95 - Improved resource manager within Holograph
+-----------------------------------------------------
+Holograph now sorts all resources into name order, and uses faster
+redraw code.
+
+02/06/95 - Full Error handling added, including error cause tracing.
+--------------------------------------------------------------------
+All errors passed through RISC OS error system, are intercepted by
+TAG.  The interrupt system within TAG is disabled (avoiding crashes) and
+additional info is added to the error string.
+(Note : Alt-Break type (forced) exits are also supported, ie SWI OS_Exit )
+
+05/06/95 - Error flag option added - (defined in handlerlib as error_flag)
+--------------------------------------------------------------------------
+Set this flag when using find_resource and an error is automatically generated
+if the resource is not found.  (may be added to more calls in the future).
+
+July 95  - Major speed up to texture mapping (non masked version).
+------------------------------------------------------------------
+Much more tidy version of texture mapper, enables a large speed
+increase for non-masked textures.  This includes more optimisations
+for sprite widths which are a power of 2 (ie 16,32,64,128,256,512).
+
+July 95  - Application merge support added to TAG
+-------------------------------------------------
+Multiple application files can be loaded at once, with all the resources
+avaible to all code.  (See function documentation for call details)
+
+23/08/95 - Functions option removed from object editor menu.
+------------------------------------------------------------
+Non supported feature anyway!
+
+23/08/95 - All name icons in edit dialogues made writable.
+----------------------------------------------------------
+
+28/12/95 - Speed up of non-masked scaled sprites.
+-------------------------------------------------
+
+29/12/95 - Lightsourcing Added to Editor/TAG - Viewpoint Type Only
+------------------------------------------------------------------
+Requires handler LsSetup to be in the handler list.   This loads
+in the lightsourcing table 'HG3D:LsTab' if not found as a misc item.
+
+29/12/95 - Optimized redraw code added to Editor Windows (256cols,ex1,ey1)
+--------------------------------------------------------------------------
+
+23/11/96 - Z rotation only option for objects, allows face-on textures etc
+--------------------------------------------------------------------------
+Requires bit 6 of 62/63 flags on world template header to be set
+Can use SetColl handler supplied with TAG, adding 2 to Data4 paramter
+
+23/11/96 - Ignore Viewpoint option on System Worlds added - for overlayed 3D panels etc
+---------------------------------------------------------------------------------------
+Option added to System World edit dialogue, no file layout changes reqd
+
+25/11/96 - Pre/Post Collision Events for Group 0 collision handlers
+-------------------------------------------------------------------
+Requires bit 4 of 62/63 flags on world template header to be set
+Can use SetColl handler supplied with TAG by adding 16 to Data3 parameter

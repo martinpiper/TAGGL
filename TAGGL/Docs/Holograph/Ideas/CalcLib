@@ -1,0 +1,29 @@
+>Ideas.Calclib
+
+===============================================================
+Massive speed up (hopefully) by storing 2D points from calclib!
+===============================================================
+
+If the bounding box is infront of viewpoint (most visable objects) fully
+transform into 2D points in calclib and add 16 to face type.
+
+The most massive speed up comes from perspective being applied to a vertex
+which may be used on many polygons in the same object.  (ie removing
+loads of divides!)
+
+Storing points in 2D avoids the clipping code (2D and 3D) from needing
+to re-load all the points to check if clipping is required.
+
+The Z co-ord needs to be stored for scaled sprite code.
+
+A table of z co-ords could be added to the 2D points list
+to enable this to happen!
+
+Average calculations for each polygon need changing.
+(abs(x)/2 + abs(y)) is requied so store this along with
+the 2D co-ords when calculating the vertices!
+
+Possible Extension:
+-------------------
+If the bounding box is entirely within clipping rectangle add another
+16 to face type and avoid wasting time in the clipper!

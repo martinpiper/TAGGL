@@ -1,0 +1,32 @@
+----------------------------------------------
+Game Editor Internal Object World Format V1.01
+(C)1993 Element 114 Software
+----------------------------------------------
+
+World Header
+============
+00/03 : pointer to object data
+04/07 : rfu
+08/11 : viewpoint position x
+12/15 : viewpoint position y
+16/19 : viewpoint position z
+20/23 : viewpoint rotation x
+24/27 : viewpoint rotation y
+28/31 : viewpoint rotation z
+   32+: object world template header
+
+Object World Template Header
+----------------------------
+00/03 : rfu
+04/07 : rfu
+08/11 : rfu
+12/15 : X centre position
+16/19 : Y centre position
+20/23 : Z centre position
+24/27 : X rotation
+28/31 : Y rotation
+32/35 : Z rotation
+36/39 : X scale (*256)
+40/43 : Y scale (*256)
+44/47 : Z scale (*256)
+48/51 : rfu

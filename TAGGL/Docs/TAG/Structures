@@ -1,0 +1,23 @@
+TAG 2.00 - Screen Mode Structure (TAGSM)
+----------------------------------------
+ 00/03  = LOG base 2 of bits per pixel (3 (8bit) or 5 (32bit) )
+ 04/07  = width of screen (pixels)
+ 08/11  = depth of screen (pixels)
+ 12/15  = total size of screen (bytes)
+ 16/31  = ptr to hardware screen banks (1-4)
+ 32/35  = ptr to current hardware screen bank
+ 36/39  = current screen bank number
+ 40/43  = number of screen banks active (1-4)
+ 44/59  = ptr to logical screen banks (1-4)
+ 60/63  = ptr to current logical screen bank
+ 64/67  = screen origin offset (bytes)
+ 68/71  = plot option flags
+          ( bit0 = vertical scale reqd (ie mode 49) )
+ 72/75  = current plot type (0=system,1=handlers)
+ 76/83  = x/y aspect ratio scaling factors (*256) (for system)
+ 94/91  = x/y aspect ratio scaling factors (*256) (for handlers)
+ 92/99  = current x/y aspect ratio sacling factors
+100/115 = clipping window (x0,y0;x1,y1) (for system)
+116/131 = clipping window (x0,y0;x1,y1) (for handlers)
+132/147 = current active clipping window
+148/255 = reserved

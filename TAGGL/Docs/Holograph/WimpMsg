@@ -1,0 +1,9 @@
+-------------
+Wimp Messages
+-------------
+
+&41C40 - HG_Load - Load Resource Data Item
+------------------------------------------
+20/23 = resource number (0-7)
+24/43 = application name (16 chars max + null terminator)
+   44+= filename of file to load (null terminated)

@@ -1,0 +1,84 @@
+REM >LSsetup
+REM ********************************
+REM ** Setup Light Sourcing V1.00 **
+REM **    (C)1995 TBA Software    **
+REM ** Programming by Alan Peters **
+REM ********************************
+
+REM ** 1) Looks for Misc Item 'LsTab'
+REM ** 2) If not found it loads 'HG3D:LsTab'
+REM ** 3) If success it enables lightsourcing
+
+f$="LSsetup"
+
+PROCinit
+PROCassemble
+PROCsave("")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD 0
+
+.frm
+TEQ R0,#0:BEQ frm_app_startup
+TEQ R0,#1:BEQ frm_app_closedown
+TEQ R0,#6:BEQ frm_ins_startup
+MOV R15,R14
+
+; ** Load / Find Misc Resource for LsTab **
+
+.frm_app_startup
+STMFD R13!,{R14}
+MOV R0,#7
+ADR R1,lstabname
+BL find_resource
+LDRVC R1,[R0,#0]
+MOVVC R0,#2
+ADRVS R1,lsfilename
+MOVVS R0,#3
+BL tag_miscop
+MOVVC R0,#6
+MOVVC R1,#1
+BLVC tag_miscop
+LDMFD R13!,{R15}
+
+.frm_app_closedown
+MOV R0,#4
+B tag_miscop
+
+; ** Force Lightsourcing if Handler is Attached to Template **
+
+.frm_ins_startup
+LDR R9,[R9,#4]
+LDRB R0,[R9,#32]
+TEQ R0,#0
+MOVEQ R0,#128+1
+STRB R0,[R9,#32]
+MOV R15,R14
+
+.lstabname  FNs("LsTab")
+.lsfilename FNs("HG3D:LsTab")
+
+FNhl_findresource
+FNhl_miscop
+
+]
+NEXT
+ENDPROC

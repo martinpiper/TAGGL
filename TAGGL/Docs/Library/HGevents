@@ -1,0 +1,31 @@
+------------------------------------------
+Holograph Handler Event Calls Format V1.01
+(C)1995 TBA Sofware
+------------------------------------------
+
+Frame Event Call Format
+=======================
+R0  = event code
+R1  = resource header ptr
+R2  = resource number
+R11 = pointer to editor 'screen' (320x256 x 256cols = mode13)
+R12 = pointer to parameter block
+
+Frame Event Codes
+=================
+128 = hg_preframe              (before frame is plotted)
+129 = hg_afterframe            (after frame is plotted)
+
+Parameter Block (function entry/exit as in TAG)
+-----------------------------------------------
+00/03 = ptr to resource list headers
+04/07 = find resource
+08/11 = divide r0/r1
+12/15 = divide r0/r2
+16/19 = divide r1/r2
+20/23 = divide r3/r2
+24/27 = plot sprite
+28/31 = plot masked sprite
+32/35 = plot scaled sprite
+36/39 = plot masked scaled sprite
+40/43 = plot texture map

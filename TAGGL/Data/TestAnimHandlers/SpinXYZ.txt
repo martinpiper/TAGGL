@@ -1,0 +1,99 @@
+REM >SpinXYZ
+REM ********************************
+REM **      Spin Object V1.00     **
+REM **    (C)1994 TBA Software    **
+REM ** Programming by Alan Peters **
+REM ********************************
+
+f$="SpinXYZ"
+
+PROCinit
+PROCassemble
+PROCsave("")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+DIM code% 32*1024
+ENDPROC
+
+DEFPROCassemble
+FOR p%=0 TO 2 STEP 2
+P%=code%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD irq-start
+
+.frm
+TEQ R0,#06:BEQ frm_ins_startup
+TEQ R0,#07:BEQ frm_ins_closedown
+TEQ R0,#10:BEQ frm_preframe
+MOV R15,R14
+
+.irq
+TEQ R0,#0:BEQ irq_ticker
+MOV R15,R14
+
+; ** Instance Startup **
+
+.frm_ins_startup
+STMFD R13!,{R14}
+MOV R0,#16
+BL heap_alloc
+MOV R12,R0
+ADD R3,R6,#24
+LDMIA R3,{R0-R2}
+STMIA R12,{R0-R2}
+LDMFD R13!,{R15}
+
+; ** Instance Closedown **
+
+.frm_ins_closedown
+MOV R0,R12
+B heap_free
+
+; ** Pre-Frame **
+
+.frm_preframe
+LDMIA R12,{R0-R2}
+ADD R3,R6,#24
+STMIA R3,{R0-R2}
+MOV R15,R14
+
+; ** IRQ **
+
+.irq_ticker
+MOV R10,R1
+LDMIA R12,{R0-R3}
+LDMIA R10,{R4-R7}
+CMP R7,#1
+CMPGE R3,R7
+MOVGE R15,R14
+ADDS R0,R0,R4
+ADDLT R0,R0,#angcount
+CMP R0,#angcount:SUBGE R0,R0,#angcount
+ADDS R1,R1,R5
+ADDLT R1,R1,#angcount
+CMP R1,#angcount:SUBGE R1,R1,#angcount
+ADDS R2,R2,R6
+ADDLT R2,R2,#angcount
+CMP R2,#angcount:SUBGE R2,R2,#angcount
+ADD R3,R3,#1
+STMIA R12,{R0-R3}
+MOV R15,R14
+
+; ** Handler Library **
+
+FNhl_heapalloc
+FNhl_heapfree
+
+]
+NEXT
+ENDPROC

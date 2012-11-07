@@ -1,0 +1,17 @@
+-------------------------
+TAG Runtime Sprite Format
+(C)1995 TBA Software
+-------------------------
+
+Live Srite Format
+=================
+00/03 = LOG base 2 of bpp , ie. 3 (8bit) or 5 (32bit)
+04/07 = width of sprite
+08/11 = depth of sprite
+12/15 = ptr to sprite data
+16/19 = ptr to palette data (0=none)
+20/23 = ptr to mask data    (0=none)  (TAG format mask data, not RISC OS)
+24/27 = size of sprite data
+28/31 = size of palette data
+32/35 = size of mask data
+36/39 = screen mode of sprite (from sprite file)

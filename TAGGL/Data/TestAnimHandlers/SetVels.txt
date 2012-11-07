@@ -1,0 +1,80 @@
+REM >SetVels
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Sets initial velocity and   **
+REM ** allocates work space.       **
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="SetVels"
+
+PROCinit
+PROCassemble
+PROCsettables
+
+PROCsave("TestAnim")
+END
+
+DEFPROCsettables
+FOR p%=0TO199:ran_tab!(p%*4)=(RND(1)-.5)*7168:NEXT
+ENDPROC
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD 0
+
+.frm
+TEQ R0,#6:BEQ instance
+MOV R15,R14
+
+.instance
+LDR R9,[R1,#0]
+CMP R9,#0
+MOVEQ R9,#1
+
+LDR R11,ran_cnt
+ADD R11,R11,#1
+CMP R11,#190
+MOVGT R11,#0
+STR R11,ran_cnt
+ADR R10,ran_tab
+ADD R10,R10,R11,LSL#2
+
+LDR R8,[R6,#52]
+ADD R8,R8,#4*3
+LDMIA R10,{R0-R2}
+MUL R0,R9,R0
+MUL R1,R9,R1
+MUL R1,R9,R2
+STMIA R8,{R0-R2}
+MOV R15,R14
+
+.ran_cnt EQUD 0
+.ran_tab FNalloc(4*200)
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+;FNhandlerlib                              ; stub routines for library calls
+
+]
+NEXT
+ENDPROC

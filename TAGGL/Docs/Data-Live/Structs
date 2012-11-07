@@ -1,0 +1,17 @@
+-----------------------------
+TAG Runtime - Misc Structures
+(C)1994 TBA Software
+-----------------------------
+
+Resource Header
+===============
+00/03 = ptr to compiled resource data
+04/07 = ptr to live resource data       
+08/11 = internal use  (bounding box size if template resource)
+12/15 = internal use  
+16/31 = resource name (padded with spaces)
+
+Notes:-
+1) The ptr to live resource data is only used in systems and worlds.
+2) A ptr to a resource header is returned from find_resource.
+3) Within any resource a ptr of -2 is not found, and -1 is end of list.

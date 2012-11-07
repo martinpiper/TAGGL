@@ -1,0 +1,53 @@
+-------------------------------------
+Game Editor Saved Object Format V1.01
+(C)1993 Element 114 Software
+-------------------------------------
+
+Object Header
+-------------
+00/15 : object name      (padded with spaces)
+16/39 : editor viewpoint (px,py,pz, rx,ry,rz)
+40/79 : editor position  (px,py,pz, rx,ry,rz, sx,sy,sz, size)
+
+Object Vertex Header
+--------------------
+00/03 : number of vertices
+   04+: vertices
+
+or:
+
+00/03 : -1
+04/23 : lightsource header
+
+Object Vertex
+-------------
+00/03 : x co-ord
+04/07 : y co-ord
+08/11 : z co-ord
+
+Object Collision Table Data
+---------------------------
+00/03 : vertex number          (-1=last)
+04/07 : collision distance
+
+Object Item Data
+----------------
+00/03 : item type              (-1=last)
+        bits 0-2 = face type
+        bits 4-7 = flags
+
+Vector Face Types 0/1
+   04/07 : desc word (1)
+   08/11 : desc word (2)
+Sprite Face Types 2/7
+   04/19 : sprite name
+   20/23 : desc word (2)
+
+Object Vertex List
+------------------
+00/03 : vertex number (-1=last)
+                      (-2=extended texture data)
+
+Extended Texture Data
+---------------------
+00/15 : texture co-ords (x0/y0,x1/y1,x2/y2,x3/y3)

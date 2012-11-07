@@ -1,0 +1,11 @@
+---------------------------------------------
+Game Editor Language Error Return Codes V1.01
+(C)1993 Element 114 Software
+---------------------------------------------
+
+Code : Description
+------------------
+ 000 : none
+ 001 : compiler error, resource (r1,r2) not found in resource (r3,r4)
+ 002 : startup program not found
+ 

@@ -1,0 +1,109 @@
+------------------------
+TAG Runtime World Format
+(C)1995 TBA Software
+------------------------
+
+World Header
+============
+00/03 : ptr to first world template header (0=none)
+04/07 : ptr to last world template header  (0=none)
+
+World Template Header
+=====================
+00/03 : ptr to next in chain               (0=last)
+04/07 : ptr to prev in chain               (0=first)
+08/11 : ptr to template data
+12/15 : X centre position
+16/19 : Y centre position
+20/23 : Z centre position
+24/27 : X rotation
+28/31 : Y rotation
+32/35 : Z rotation
+36/39 : X scale (*256)
+40/43 : Y scale (*256)
+44/47 : Z scale (*256)
+48/51 : bounding box size (from centre, scaled by TAG using highest scale)
+52/55 : data word (1)
+56/59 : data word (2)
+60/61 : collision group bit field (bits that are set in both cause a collision)
+62/63 : collision/misc flags
+        -------------< Event/Detection Options >------------------
+        bit  0 = event enable
+        bit  1 = detect always
+        bit  2 = detect if not behind view, and in depth list
+        bit  3 = detect if visable on screen
+        bit  4 = requires start/stop events for collisions
+        -------------< Re-calc Options >------------------------------------
+        bit  5 = re-calc once (does not move) (used by redraw & collision)
+        bit  6 = z rotation only flag (textures as rotating scaled sprites)
+        bit  7 = re-calc on ticker
+        bit  8 = use data word 2 as ptr to x/y/z pos
+        bit  9 = use data word 2 as ptr to x/y/z pos & rot
+        bit 13 = use data word 2 as ptr to extended data structure
+        bit 14 = don't store 2D position & size in xds (speed up)
+        -------------< Interal Work Flags >-----------------------
+        bit 10 = detection enabled
+        bit 11 = do not display this object flag
+        bit 12 = dead flag
+        -------------< Linklist Addition Details >----------------
+        bit 15 = collision linklist number to use (0/1)
+       -----------------------------------------------------------
+
+64/67 : ptr to collision data workspace
+68/71 : no.of collision items
+72/79 : collision linklist header
+80/83 : world ptr
+   84+: handler r12 values
+     +: collision data workspace
+
+Collision Options
+-----------------
+Note: 1) only one of bits 8/9/13 should be set, to avoid odd results.
+      2) TAG checks bits 0-7 (of 62/63) after the instance startup event
+         to detect if collisions are required, and to update linklists etc.
+
+Collision Linklists
+-------------------
+TAG checks all items in list 0, with all other items in list 0 and in list 1,
+however items in list 1 are not checked with other items in list 1.
+ (ie. for bullets etc. a lot of time can be saved)
+
+=======================
+Extended Data Structure
+=======================
+
+00/03 : ptr to x/y/z pos (0=none)
+04/07 : ptr to x/y/z rot (0=none)
+08/11 : offset to sprite animation structure (0=none)
+12/15 : offset to template animation structure (0=none) (not yet implemented)
+16/19 : 2D x of object centre (set by TAG)
+20/23 : 2D y of object centre (set by TAG)
+24/27 : 2D bounding box size  (set by TAG)
+28/31 : 0
+
+==========================
+Sprite Animation Structure
+==========================
+
+A sprite animation structure can be used for objects containing sprites.
+All sprites are replaced with the current one in the animation structure thus
+removing the need for multiple templates to create simple animtaions.
+
+00/03 : current frame number (0 based)
+   04+: sprite frame list
+
+Sprite Frame List Entry
+-----------------------
+00/03 : ptr to sprite
+
+========================================================
+Template Animation Structure (NOT currently implemented)
+========================================================
+This can be used to animate objects.
+
+00/03 : current frame number (0 based)
+   04+: template animation entries
+
+Template Animation Entry
+------------------------
+00/03 : ptr to template (as from find resource & indirected)

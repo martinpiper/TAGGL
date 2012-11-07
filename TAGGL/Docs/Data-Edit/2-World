@@ -1,0 +1,30 @@
+---------------------------------------
+Game Editor Internal World Format V1.01
+(C)1993 Element 114 Software
+---------------------------------------
+
+World Header
+============
+00/03 : pointer to first world template header (0=none)
+04/07 : pointer to last world template header  (0=none)
+08/31 : viewpoint (px,py,pz, rx,ry,rz)
+32/51 : lightsource
+
+World Template Header
+=====================
+00/03 : pointer to next in chain               (0=last)
+04/07 : pointer to prev in chain               (0=first)
+08/11 : pointer to template name
+12/15 : X centre position
+16/19 : Y centre position
+20/23 : Z centre position
+24/27 : X rotation
+28/31 : Y rotation
+32/35 : Z rotation
+36/39 : X scale (*256)
+40/43 : Y scale (*256)
+44/47 : Z scale (*256)
+48/51 : collision distance (from centre, not scaled)
+52/55 : data word (1)
+56/59 : data word (2)
+|60/63 : collision flags

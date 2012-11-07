@@ -1,0 +1,63 @@
+REM >Force
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Emulates a force by using   **
+REM ** TDW1/2/3 acceleration value **
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="Force"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD 0
+EQUD irq-start
+
+.irq
+TEQ R0,#0:BEQ tick
+MOV R15,R14
+
+.tick
+MOV R12,R1
+LDR R8,[R6,#52]
+LDMIA R8,{R0-R5}
+ADD R0,R0,R3
+ADD R1,R1,R4
+ADD R2,R2,R5
+LDMIA R12,{R9-R11}
+ADD R3,R3,R9
+ADD R4,R4,R10
+ADD R5,R5,R11
+STMIA R8,{R0-R5}
+MOV R15,R14
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+;FNhandlerlib                              ; stub routines for library calls
+
+]
+NEXT
+ENDPROC

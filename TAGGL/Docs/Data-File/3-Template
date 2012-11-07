@@ -1,0 +1,29 @@
+---------------------------------------
+Game Editor Saved Template Format V1.01
+(C)1993 Element 114 Software
+---------------------------------------
+
+Tempate Header
+==============
+00/15 : template name
+16/39 : editor viewpoint (wx,wy,wz,rx,ry,rz)
+40/79 : editor position  (px,py,pz,rx,ry,rz,sx,sy,sz,size)
+| 80/83 : default collision flags
+
+Template Object Depth List
+--------------------------
+00/15 : object name (padded with spaces)           (0/3=0=last)
+16/19 : hidden removal depth
+
+or:
+
+00/03 : -1
+04/23 : lightsource header
+
+Template Object Handler List
+----------------------------
+00/15 : handler name                               (0/3=0=last)
+16/19 : data word (1)
+20/23 : data word (2)
+24/27 : data word (3)
+28/31 : data word (4)

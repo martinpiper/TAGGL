@@ -1,0 +1,44 @@
+TAG Span List Headers (*screen depth)
+-------------------------------------
+00/03 = ptr to 1st item in list for this scanline
+
+TAG SpanType List Headers (*max no.of plotters)
+-----------------------------------------------
+00/03 = ptr to 1st item in list for this spantype
+
+Span List Entry
+---------------
+00/07 = linklist in span list or child list
+08/11 = ptr to 1st child entry
+12/15 = parent ptr
+16/23 = linklist for span type
+24/27 = span type
+28/31 = dw1
+32/35 = dw2
+36/39 = dw3
+
+( With suitable accuracy to hold the values. )
+
+32/35 = x start of span
+20/23 = length of span
+24/27 = w (1/z) at left of span
+28/31 = w (1/z) at right of span
+32/35 = dw (inc for w per pixel)
+36/39 = uw (u/z) at left of span
+40/43 = duw (inc for uw per pixel)
+44/47 = vw (v/z) at left of span
+48/51 = dvw (inc for vw per pixel)
+
+= R
+= G
+= B
+= dR
+= dG
+= dB
+
+= AR
+= dAR
+= AG
+= dAG
+= AB
+= dAB

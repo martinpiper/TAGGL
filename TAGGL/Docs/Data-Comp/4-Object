@@ -1,0 +1,40 @@
+---------------------------------------
+TAG Engine Compiled Object Format V1.01
+(C)1994 TBA Software
+---------------------------------------
+
+Vertex Data Header
+------------------
+00/03 : number of vertices
+
+Vertex Data
+-----------
+00/03 : x co-ord
+04/07 : y co-ord
+08/11 : z co-ord
+
+Collision Data Header
+---------------------
+00/03 : number of collision data entries
+
+Collision Data Entry
+--------------------
+00/03 : vertex number
+04/07 : collision distance
+
+Item Data
+---------
+00/03 : item type              (-1=last) (bit31=extended texture data follows)
+04/07 : desc word (1)
+08/11 : desc word (2)
+12/27 : extended texture data (optional)
+    + : vertex list
+
+Vertex List
+-----------
+00/03 : vertex number          (-1=last)
+                               (-2=extended texture data follows)
+
+Extended Texture Data
+---------------------
+00/15 : texture co-ords (x0/y0,x1/y1,x2/y2,x3/y3)

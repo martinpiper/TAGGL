@@ -1,0 +1,412 @@
+----------------------------------------
+Holograph 3D Instructions V1.51 - Jan 96
+(C)1996 TBA Sofware
+----------------------------------------
+
+Installation
+------------
+Copy the contents of Holgraph Disk 1 into the destination directory
+on your Hard Disk.  The program is then installed!
+
+Loading
+-------
+Double click !Holograph and the program will load onto the icon bar.
+
+Note : <Wimp$Scrap> is required for application transfers and copy options
+       so this should be set-up by using !Scrap.
+       <Output$Dir> is used as the directory for compiling code and applications.
+       Filetypes &110-&112 are used by Holograph for saving individual resource items.
+
+---------------------------------------------------------------------------------------
+
+Overview
+--------
+Holograph is a application design system, with its main use currently
+being for 3D games.  It allows the creation of an application by building
+up a collection of resources which are then available to the program
+at runtime.  TAG engine, the runtime manager, contains a large set
+of routines which are available to the programmer at runtime.  This removes
+the need to re-code core routines , such as memory management and graphics
+plotting, and is also 99.99% bug-free.  (it has also been soak tested!)
+The current version runs in a MODE 13 (or MODE 49 on-the-fly scaled) display,
+and allows variable clipping windows and vanishing point.
+
+Performance
+-----------
+TAG engine is designed to offer maximum performance by using optimized display
+routines.  A realistic figure of 16-20k filled vector polygons, and 4-8k texture mapped
+sprites, per second are possible on a standard ARM610 RISC PC.  A purly plotting based
+figure of 130k 1x1 & 37k 10x10 pixel triangle polygons per second can be achived but is
+somewhat meaningless as it has no practical application!   A complete analysis of
+average TAG system performance is avaliable if required, along with hints and tips
+on how to achive maximum runtime performance.
+
+Application Resources
+---------------------
+A Holograph application consists of 8 different resource types:-
+
+  Systems    - A collection of Worlds or misc plot Handlers
+  Worlds     - A collection of Templates
+  Templates  - Depth listed objects and attached Handlers
+  Objects    - 3D Objects made up of vertices and faces
+  Sprites    - Standard RISC OS format sprites
+  Facelists  - not currently implemented (do not use!)
+  Handlers   - Compiled ARM code for use at runtime
+  Misc_Items - Any other data for use in handlers (ie masked sprite data etc.)
+
+Handlers
+--------
+A handler is a piece of relocatable machine code.  TAG is an event driven environment
+and each handler has two entry points for events to be passed to the code.  Documentation
+can be found in the !Holograph.Docs.Library directory on handler registers parameters.
+Example handlers can be found in the handlers directory which will do simple operations
+such as clear the screen and spin objects around etc.
+
+Objects
+-------
+An object is a collection of vertices in 3D space, which are connected to make
+up a face.  Each face has its own properties and can be one of many different
+types.  Collision boxes can also be created on objects to enable collision detection.
+
+Templates
+---------
+Templates are used to create depth lists of objects and to attach handlers (code) to
+objects.  The depth list allows more simple objects to be displayed when the centre
+point of the object is a certain distance from the viewpoint.  Handlers have four
+32bit data words (or parameters) which can be used to pass parameters.
+
+( Note:-                                                                              )
+( Objects and templates are not dynamic at runtime, in that only one copy is stored.  )
+( Multiple templates should be pre-defined to achive, for example, animating objects. )
+
+Worlds
+------
+A world is a collection of templates each of which has its own 3D position/rotation
+and scale, and two additional data words.  Each 'instance' of a particular template
+has its own r12 values maintained for all handlers a similar approach to RISC OS
+Modules.  This enables the same piece of code to manage many different 'objects'
+within a game.  A world is also dynamic, in that templates may be added or removed
+at run time.
+
+Systems
+-------
+A system is a collection of worlds.  Each world can have a position offset and a plotting
+group number.  The worlds, however, are not copied each time they are used, so if
+a teplate is removed from a world it will be reflected in all copies of the world that are
+within a system.  The plotting group can be used to force certain objects to 'sort' infront
+or behind others.  For example, the floor of a large world may be plotted first as one
+huge polygon, then objects within the game plotted afterwards.   Groups are plotted
+in acending order.   The other option within a system is a misc item.  This is a pointer
+to a misc_item resource which is passed on to a piece of code which may be installed within
+the vector table at &8100.  This enables polygons to be placed directly into the output
+buffers to produce for example a faster Digital Elevation Map calculation.  Documentation
+is avalible upon request for this facility if required.
+
+---------------------------------------------------------------------------------------
+
+Creating a new application
+--------------------------
+From the iconbar menu use the 'New App' savebox to create a new application.
+The application will automatically be loaded into the editor.
+
+Loading an existing application
+-------------------------------
+1) Double click the application which will load holograph if required, or
+2) Drag the applicaation to a holograph window.
+
+Saving an application
+---------------------
+To save the application use the application.save option on the application list menu
+or use <f3> when a resource list window is highlighted.
+
+Saving all loaded applications
+------------------------------
+To save all the loaded applications use <shift><ctrl><f3> when a resource list
+window is highlighted.
+
+Compiling an application
+------------------------
+Use <f10> to compile the current application, this will compile the application
+into <Output$Dir>.<appname> and open the filer window containing the output file.
+Use <shift><f10> to save and compile, <ctrl><f10> to compile and run, and
+<shift><ctrl><f10> to save, compile and run.
+
+Removing an application from memory
+-----------------------------------
+Use the application.remove option to remove all selected applications from the
+application list window.  (Beware! This operation may take a long time on very
+large applications!)
+
+---------------------------------------------------------------------------------------
+
+==================
+Managing Resources
+==================
+
+The resource lists are basically a simple version of the RISC OS filer windows.
+They contain a single column list of all the items for each resource type.
+
+Creating a new resource item
+----------------------------
+1) Open the resource list window for the resource type which you wish to create
+2) Enter the resources label into the <resourcename>.create dialogue and click on <ok>.
+
+Saving a resource item
+----------------------
+Use the <resourcename>.save dialogue box to save the resource item.
+
+Copying a resource item
+-----------------------
+Use the <resourcename>.copy dialogue to enter the new name and click on <ok>.
+
+Renaming a resource item
+------------------------
+Use the <resourcename>.rename dialogue to amend the name and click on <ok>.
+
+Deleting a resource item
+------------------------
+Select the resource item within its resource list and use the <resourcename>.delete
+option to remove the item.
+
+Editing a resource item
+-----------------------
+Double click on the resouce item in the resource list window and the appropriate editor
+will be loaded.  (Note that not all resources have an editor within Holograph.  Sprites
+,for example, would be best edited elsewhere in a program such as !Paint.)
+
+---------------------------------------------------------------------------------------
+
+=================
+Editing Resources
+=================
+
+=============
+Object Editor
+=============
+
+The object editor is the most powerful of all the editors within Holograph.  It
+consists of a useful set of tools which enable quick and easy manipulation of
+3D objects.  A 3D object within Holograph is a collection of points (or vertices)
+which are described using a (x,y,z) co-ordinate system.  These vertices can be
+connected to form a 'face' (or item).  Each face within the object is of a
+specific type, from a simple line to a surface mapped sprite, and the parameters
+for these can be set using simple dialogue boxes.  All vertices on a face must
+be connected in a clockwise order, for the face to be visable, and must form
+a convex shape.  A vector type face can be made up of any number of vertices
+so near 'curves' can be created using a lot of vertices.
+
+( Note than wireframe vector faces (lines) have no hiddent removal, and can define
+  any shape, convex or concave)
+
+The toolbar contains the most commonly used functions and is described in detail below.
+
+-----------
+The toolbar
+-----------
+
+Each tool is described below giving its position from the top of the
+toolbar (ie 0,0 = top left corner)
+
+Create vertex (0,0)
+-------------------
+This tool allows a new vertex to be added to the object.  The object and viewpoint
+must be at a (0,0,0) rotation for this to work correctly due to problems with
+non-communicative 3D rotations!  Any number of vertices may be defined within
+an object so very complex objects may be defined.
+
+Delete vertex (1,0)
+-------------------
+Use this tool to remove all selected vertices from within the object. It
+also removes and connected faces and collision data.
+
+Delete faces (0,1)
+------------------
+Use this tool to remove faces which have all their vertices within the current
+selection.  (If two faces are used to form a face which is viewable from both
+sides then both will be removed.)
+
+Edit face (1,1)
+---------------
+This produces a list of faces which contain all of the currently selected vertices.
+Select a face from the list to bring up the edit face dialogue.
+The current vertex selection is also updated with the selected face's vertices.
+(note that adjust will keep the menu open so you can find a face from a selection)
+
+Create vector face (2,0)
+------------------------
+Use this tool to connect a new face to the current selection of vertices.
+(The dialogue will open with the filled flag and colour set to the last ones used)
+
+Create sprite face (2,1)
+------------------------
+This tool opens the create face dialogue with one of many sprite based face types.
+If a single vertex is selected then a 2D sprite may be attached to the point
+with the option of scaling and or a mask being used.   If 4 vertices are selected
+then a surface mapped sprite may be created.
+
+(To create a triangular (3 sided) surface mapped sprite, create a 4 sided face
+ and move one vertex on top of another.  Then use 'remove duplicates' from the menu
+ to remove the duplicated vertex.  Simple huh?)
+
+Highlight vertices and collision boxes (3,0)
+--------------------------------------------
+This option simply toggles the highlight option for all vertices and collision boxes
+on or off.
+
+Create/Edit collision box (3,1)
+-------------------------------
+This tool allows a collision box to be added (or amended) to the last selected
+vertex.  If the highligh option is selected (3,0) then the box will be displayed.
+
+Centre rotation (4,0)
+---------------------
+This tool sets the object rotation to (0,0,0) - useful when adding new points!
+
+Spin object (4,1)
+-----------------
+This sets the object spinning - nothing useful really - just enables you to
+show off your new objects!!!
+
+Change viewpoint (5,0)
+----------------------
+Use this tool to amend the current viewpoint position and rotation.
+
+Change object position (5,1)
+----------------------------
+Use this tool to amend the current object positition and rotation
+
+Change object scale (6,0)
+-------------------------
+Use this tool to amend the current object scale.
+(all scale values are *256 - ie. 256=1:1 & 512=2:1)
+
+Move vertex (select click) or Copy/Transform (adjust click) (6,1)
+-----------------------------------------------------------------
+Move vertex    - Use this tool to move the current vertex selection.
+Copy/transform - see 'copy/transform' menu option (below)
+
+Selection tool (7,0)
+--------------------
+This is the default tool, it allows vertex selection using standard RISC OS
+selection methods (ie select & adjust).  Double click on a vertex to show
+its position and to quickly move it around.
+
+Full screen view (7,1)
+----------------------
+This gives a full screen view - see 'Full Screen Views' below for more information.
+
+--------
+The menu
+--------
+
+Process.Remove Duplicates
+-------------------------
+This option scans the entire object removing duplicate vertices and faces, thus
+minimising the amount of memory used.  This is most useful after merging to objects
+together, of copying a large set of faces.
+
+Process.Wireframe-Filled
+------------------------
+not yet implemented
+
+Process.Filled-Wireframe
+------------------------
+not yet implemented
+
+Selection.Select All
+--------------------
+Selects all vertices in the object
+
+Selection.Clear Selection
+-------------------------
+Clears the current selection
+
+Selection.Tidy
+--------------
+This snaps all vertices to a (50x50x50) 3D grid.
+This value will be definable in the next upgrade of Holograph!
+
+Selection.Reverse Order
+-----------------------
+Use this tool to reverse the order of the vertices on all faces which have
+all of their vertices in the current selection.  This is most useful when a
+face has been accidently defined with an anti-clockwise vertex order!
+
+Selection.Copy/Transform
+------------------------
+This dialogue allows transformation of vertices within the 3D object.  There
+are options to move/rotate and scale the selected vertices, as well as copy
+vertices, copy connected faces and collision data.
+
+Function.Tunnel
+---------------
+not yet implemented - do not use!
+
+Function.Torus
+--------------
+not yet implemented - do not use!
+
+--------------------------------------------------------------------------------------
+
+Extra documentation will be provied for the template, world, and system editors in
+the near future, however these are much more straight forward than the object editor.
+
+---------------------------------------------------------------------------------------
+
+--------------------------
+Full Screen Mode Operation
+--------------------------
+
+When Holograph enters full screen mode the following keys may be used:-
+
+In All Editors:-
+----------------
+
+ ' = move viewpoint forwards  (z+)
+ / = move viewpoint backwards (z-)
+ ; = move viewpoint up        (y+)
+ . = move viewpoint down      (y-)
+ M = move viewpoint left      (x-)
+ , = move viewpoint right     (x+)
+
+ I = rotate viewpoint         (x+)
+ J = rotate viewpoint         (x-)
+ O = rotate viewpoint         (y+)
+ K = rotate viewpoint         (y-)
+ P = rotate viewpoint         (z+)
+ L = rotate viewpoint         (z-)
+
+In Object/Tempate/World Editors:-
+---------------------------------
+
+ G = move object forwards     (z+)
+ V = move object backwards    (z-)
+ F = move object up           (y+)
+ C = move object back         (y-)
+ Z = move object left         (x-)
+ X = move object right        (x+)
+
+ W = rotate object            (x+)
+ A = rotate object            (x-)
+ E = rotate object            (y+)
+ S = rotate object            (y-)
+ R = rotate object            (z+)
+ D = rotate object            (z-)
+
+-------------------
+Collision Detection
+-------------------
+
+Collision detection is enabled by setting a flag within the data table at &8100.
+When two objects collide within 3D space IRQ event 1 is generated.  Collisions
+may be checked at n 100hz intervals.   Each world template header has collision flags.
+The first 16bits of these flags are a bit field which is ANDed with the bit field
+on another template header to see if a collision is possible.  This enables grouping
+of objects and a quick way of detecting what type of object a template has hit.
+The calculation options should be used to minimise the re-calculation required of
+the objects within a world.  If an object is static, then the calculate once option
+should be used.
+
+Note : all IRQ events may be switched to the preframe or vsync if required using
+       a flag within the &8100 data area.
+

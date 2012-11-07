@@ -1,0 +1,39 @@
+
+; ** 3D Vector Plotter Register Usage **
+
+;  R0 = temp reg
+;  R1 = temp reg
+;  R2 = x gradient left
+;  R3 = y count left
+;  R4 = x gradient right
+;  R5 = y count right
+;  R6 = x gradient total left
+;  R7 = x gradient total right
+;  R8 = temp reg
+;  R9 = temp reg
+; R10 = max y value
+; R11 = pointer to start of buffer
+; R12 = pointer to end of buffer
+; R13 = screen position at miny
+; R14 = plot table index
+
+; ** 3D Mapped Sprite Plotter **
+
+;  R0-R3 = x0-x3
+;  R4-R7 = y0-y3
+;  R8 = mask
+;  R9 = width
+; R10 = depth
+; R11 = screen address
+; R12 = sprite address
+
+; ** 3D Scaled Sprite **
+
+;  R5 = x pos
+;  R6 = y pos
+;  R7 = mask value
+;  R8 = scale (*512)
+;  R9 = width
+; R10 = depth
+; R11 = screen address
+; R12 = sprite address

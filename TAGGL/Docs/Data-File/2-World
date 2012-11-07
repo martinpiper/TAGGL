@@ -1,0 +1,33 @@
+------------------------------------
+Game Editor Saved World Format V1.01
+(C)1993 Element 114 Software
+------------------------------------
+
+World Header
+============
+00/15 : world name
+16/39 : editor viewpoint
+   40+: world template header list...
+
+World Template Header
+---------------------
+00/15 : template name         (0/3=0=last)
+16/19 : X centre position
+20/23 : Y centre position
+24/27 : Z centre position
+28/31 : X rotation
+32/35 : Y rotation
+36/39 : Z rotation
+40/43 : X scale (*256)
+44/47 : Y scale (*256)
+48/51 : Z scale (*256)
+52/55 : bounding box size (from centre)
+56/59 : data word (0)
+60/63 : data word (1)
+
+| 64/67 : collision flags (as for 60/63 in live template header)
+
+or:
+
+00/03 : -1
+04/23 : lightsource header

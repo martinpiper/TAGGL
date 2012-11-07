@@ -1,0 +1,18 @@
+------------------------------------
+Game Editor Sprite Data Format V1.01
+(C)1993 Element 114 Software
+------------------------------------
+
+Mapped Sprite (type 2/3) (4 vertices)
+-------------------------------------
+
+0/3 = sprite pointer
+  4 = bit mask value
+
+Scaled Sprite (type 4/5) (1 vertex)
+-----------------------------------
+
+0/3 = sprite pointer
+4/5 = scale
+  6 = mask value
+  7 = rfu

@@ -1,0 +1,19 @@
+
+1) RZ = 0!
+
+2) Calc X,Y,Z distance from object 1 to object 2
+
+3) Calc 'new' side of triangle using SQR(x^2+z^2)
+
+4) Calc RX using DEG(ATN(Y/new)):-
+   -----------------------------------
+   1) Y & new are positive in the calculation
+   2) If y>new use 90-DEG(ATN(new/Y))
+   3) if y<0 sub angle from 0
+
+5) Calc RY using DEG(ATN(X/Z)):-
+   -------------------------------------
+   1) X & Z are positive in the calculation
+   2) if z>x use 90-DEG(ATN(Z/X))
+   3) if x<0 sub angle from 0
+   4) if z<0 sub angle from 0

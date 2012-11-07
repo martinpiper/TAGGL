@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Inc">
+      <UniqueIdentifier>{5edf53d6-1431-4efb-b611-3e97ccee7a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ArcEmu">
+      <UniqueIdentifier>{15ac46de-5a30-4eec-a570-ad9a3b536d51}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ROEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Template.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARMCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\arm_iss.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\armemul.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\emumem.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\armcopro.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\armmmu.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\decode.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\syscall.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\armsupp.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="ARCEmu\util.cpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClCompile>
+    <ClCompile Include="TAGFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ReplicaNet\ReplicaNetPublic\AmalgamatedReplicaNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Inc\Object.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\BaseItem.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\ROEditor.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\System.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Types.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\World.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Template.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\DataChunk.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\ARMCore.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\arch.hpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\arm_dec.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\arm_iss.hpp">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\armemul.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\auto_impl.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\config.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\misc.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\bittypes.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\emumem.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\arm_io.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\decode.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\syscall.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\arm_dec2.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\auto_disasm.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\armcopro.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\tlb.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="ARCEmu\armmmu.h">
+      <Filter>Source Files\ArcEmu</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\TAGFunctions.h">
+      <Filter>Header Files\Inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Done.txt" />
+    <None Include="TODO.txt" />
+  </ItemGroup>
+</Project>

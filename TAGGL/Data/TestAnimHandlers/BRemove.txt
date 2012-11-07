@@ -1,0 +1,59 @@
+REM >BRemove
+REM *********************************
+REM **   Handler Template V1.00    **
+REM **    (C)1994 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+DIM code% 32*1024
+ENDPROC
+
+DEFPROCassemble
+FOR p%=0 TO 2 STEP 2
+P%=code%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD 0
+EQUD irq-start
+
+.irq
+TEQ R0,#0:BEQ vsync
+MOV R15,R14
+
+; ***************
+; ** Main Code **
+; ***************
+
+; ** Copy the positions over to the template
+
+.vsync
+LDR R0,[R6,#16]
+CMN R0,#500
+MOVGT R15,R14
+MOV R0,#1
+MOV R1,R6
+MOV R2,R7
+B del_template
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+FNhandlerlib                              ; stub routines for library calls
+
+]
+NEXT
+ENDPROC

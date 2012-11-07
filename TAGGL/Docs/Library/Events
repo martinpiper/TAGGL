@@ -1,0 +1,79 @@
+------------------------------------
+TAG Handler Event Calls Format V1.01
+(C)1995 TBA Sofware
+------------------------------------
+
+Application And Frame Event Codes
+=================================
+00 (A) = application startup   (once only, when application is loaded)
+01 (A) = application closedown (once only, when application is closed)
+02 (A) = game re-start         (when game is entered from the desktop)
+03 (A) = game closedown        (when game returns to the desktop)
+04 (F) = system startup        (when new system is started)
+05 (F) = system closedown      (when system is closed)
+06 (F) = instance startup      (when system is started, or world template added)
+07 (F) = instance closedown    (when system is close, or world template deleted)
+08 (F) = game load (RFU)       (when saved game is loaded) (NOT AVALIABLE)
+09 (F) = game save (RFU)       (when saved game is saved)  (NOT AVALIABLE)
+10 (F) = pre-frame             (before frame is plotted)
+11 (F) = mid-frame             (before each group is plotted)
+12 (F) = after frame           (after frame is plotted)
+13 (A) = game paused           (f10 pressed)
+14 (A) = game re-started       (f11 pressed)
+15 (A) = screen mode changed   (set_mode has been called)
+16 (A) = wimp event            (R10 = ptr to wimp block : 0/3=event number,4+=data)
+17 (F) = between frames        (before screen banks are switched)
+18 (A) = pre-system            (before a new system is started)
+19 (A) = after-system          (after a system is closed)
+
+Interrupt Event Codes
+=====================
+00 (F) = tick                  (50 times a second default, &8160 is tick mode)
+01 (F) = collision             (checked on ticker - &816C is check interval)
+02 (F) = pre-collision         (bit4 of 62/63 flags needs setting, and these 2 events)
+03 (F) = post-collision        (...are only sent to templates in collision group 0)
+
+
+Application Startup/Closedown - Event Call Format - Once per handler
+====================================================================
+R0  = event code
+R10 = pointer to temp data work area
+
+Frame and Interrupt - Event Call Format
+=======================================
+R0  = event code
+R1  = pointer to 4 data words from template
+R4  = pointer to cos table
+R5  = pointer to sin table
+R6  = pointer to world template header
+R7  = pointer to world resource header
+R8  = pointer to system world header
+R9  = pointer to system resource header
+R10 = pointer to parameter block (do not modify during event)
+R11 = pointer to current screen bank
+R12 = private word for 'instance' of handler
+
+=====================
+Special Event Details
+=====================
+
+Instance Startup Event - R10 data
+---------------------------------
+00/03 = age (in ticks) since items was placed in add queue
+04/15 = misc parameters (if added using add_world)
+
+Mid-Frame Event - R10 data
+--------------------------
+00/03 = group number
+
+Collision Event - R10 data
+--------------------------
+00/03 = ptr to system world header
+04/07 = ptr to world template header
+08/11 = vertex number (this object)
+12/15 = vertex number (other object)
+16/19 = resultant bitstring using logical AND
+
+Pre-Post Collision Events
+-------------------------
+R10 is undefined on these events

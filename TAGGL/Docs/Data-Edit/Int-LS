@@ -1,0 +1,5 @@
+Internal EditWindow Lightsource Format
+--------------------------------------
+00/03 = light source type (0=none,1=view,2=remote) (bit7=all objects)
+04/15 = remote light source position
+16/39 = ambient light details (min/max rgb)

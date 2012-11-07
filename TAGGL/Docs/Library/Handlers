@@ -1,0 +1,11 @@
+-----------------------------
+TAG Handler Code Format V1.00
+(C)1995 TBA Software
+-----------------------------
+
+Handlers
+========
+00/03 = offset to event handler code (frame)     (from handler start)
+04/07 = offset to event handler code (interrupt) (from handler start)
+
+See file 'Code.Handlers.General.BaseCode' for an example program shell.

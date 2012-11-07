@@ -1,0 +1,27 @@
+------------------------------------
+Game Editor System File Format V1.00
+(C)1993 Element 114 Software
+------------------------------------
+
+System Header
+=============
+00/15 : system name
+16/39 : viewpoint header (px,py,pz , rx,ry,rz)
+   40+: system worlds
+
+System World
+============
+00/15 : label name (0/3=0 = last)
+   16 : world/misc fag (0=misc 1=world)
+   17 : filled flag    (0=wireframe 1=filled)
+   18 : flags          (bit0 = ignore viewpoint)
+   19 : rfu
+20/23 : x position offset
+24/27 : y position offset
+28/31 : z position offset
+32/35 : group number
+
+or:
+
+00/03 : -1
+04/23 : lightsource data

@@ -1,0 +1,93 @@
+Load objects and sprites, test rendering with textures.
+
+
+
+Load templates, worlds, systems.
+Test simple views.
+
+
+
+Load handler and misc resources.
+
+
+
+Check object position without rotation.
+Check system view offset with above.
+Check object rotation without position.
+Check object position and rotation.
+
+
+
+Add a debug viewpoint movement bit of code (C++).
+
+
+
+ARM EMulation
+26 Bit ARM emulation needed
+R15
+31 N
+30 Z
+29 C
+28 V
+27 I
+26 F
+ 1 M1
+ 0 M0
+http://imrannazar.com/ARM-Opcode-Map
+http://www.simplemachines.it/doc/arm_inst.pdf
+The emulation can spot writes to the "screen" memory and to the other loaded resources memory. If there is a write then reconvert that resource on demand.
+arm_emulator::execute_system
+D:\Downloads\SimIt-ARM-3.0.tar\SimIt-ARM-3.0\SimIt-ARM-3.0\emulator
+
+
+
+To the loaded resource add names for each instance. Yes it is a bit wasteful but it can be used for paranoia checking with resources indexes later on.
+
+
+
+Add the IRQ and frame update code for all running objects. Copy back position and rotation values from the updated ARM world template.
+
+
+
+Is the handler private word for the instance of that handler or is it global for all handlers in the template?
+*From code inspection of existing handler code it is for each instance of each handler in a template.
+
+
+
+Scaled sprites. Face data flags.
+
+
+
+Wireframe tris and quads etc.
+
+
+
+Tweaked the ARM emu (MEMORY_PAGE_SIZE_BITS) to allow the block below 0x8000 to have different access to the blocks above
+
+
+
+Wth ARM code enabled the MIME demo seems to be taking an age to run. Why?
+It was trying to access a null pointer. Exceptions. Probably one of the object pointers not setup in the template.
+
+
+
+The ARM emulation for ADR (sub/add x, r15, #y) is a bit wrong since the add/sub introduces the processor flags from R15 into the calculation when it shouldn't do.
+*Added code to detect the source and destination register and remove flags if the source is PC and the destination is not PC.
+
+
+
+Look in "Functions" text file. Look at "global data".
+Need the data pointers setup.
+
+
+
+Need cos sin tables for handlers
+
+
+
+Then add TAG function 8114 to return the above resource header.
+Note PSR VC or VS flag.
+
+
+
+Loaded Templates need TAG memory allocated. Do this after all the templates have been loaded and parsed.

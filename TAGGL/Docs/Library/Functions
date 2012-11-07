@@ -1,0 +1,529 @@
+-------------------------------------------------
+TAG Functions Calls and Handerlib Functions V1.00
+(C)1995 TBA Software
+-------------------------------------------------
+
+===============================
+Base = &8100 - Function Summary
+===============================
+
+:-----:-----------------------------------------:------------------------:-----------------------------:
+:     :                                         :                        :                       :     :
+: Pos : Description                             : Function Name          : Label Name            : IRQ :
+:     :                                         :                        :                       :     :
+:--< General Functions / Data Ptrs >------------:------------------------:-----------------------:-----:
+:     :                                         :                        :                       :     :
+: &00 : heap alloc                              : FNhl_heapalloc         : heap_alloc            :  N  :
+: &04 : heap free                               : FNhl_heapfree          : heap_free             :  N  :
+: &08 : linklist create                         : FNhl_linklistcreate    : linklist_create       :  Y  :
+: &0C : linklist delete                         : FNhl_linklistdelete    : linklist_delete       :  Y  :
+: &10 : linklist insert                         : FNhl_linklistinsert    : linklist_insert       :  Y  :
+: &14 : find resource pointer from label        : FNhl_findresource      : find_resource         :  Y  :
+: &18 : add template(s) to world                : FNhl_addtemplate       : add_template          :  Y  :
+: &1C : del template(s) from world              : FNhl_deltemplate       : del_template          :  Y  :
+: &20 : calc world transform                    : FNhl_rotateworld       : rotateworld           :  Y  :
+: &24 : calc object transform                   : FNhl_rotateobject      : rotateobject          :  Y  :
+: &28 : exec new system                         : FNhl_execsystem        : exec_system           :  Y  :
+: &2C : quicksort                               : FNhl_quicksort         : quicksort             :  N  :
+: &30 : plotframe                               : FNhl_plotframe         : plotframe             :  N  :
+: &34 : read heap size                          :                        :                       :  N  :
+: &38 : huffman compress data                   : FNhl_compress          : huffman_compress      :  N  :
+: &3C : huffman decompress data                 : FNhl_decompress        : huffman_decompress    :  N  :
+: &40 : set screen mode                         : FNhl_setmode           : set_mode              :  N  :
+: &44 : set clipping rectangle                  : FNhl_setcrect          : set_crect             :  N  :
+: &48 : set vanishing point                     : FNhl_setvanish         : set_vanish            :  N  :
+: &4C : set/get active clip rectangle           : FNhl_setclip           : set_clip              :  N  :
+: &50 : set plot options / misc function        : FNhl_setplot           : set_plot              :  N  :
+: &54 : misc operation                          : FNhl_miscop            : tag_miscop            :  N  :
+: &58 : polygon clipper                         : FNhl_polyclip          : polyclip              :     :
+: &5C : issue command                           : FNhl_issuecommand      : issuecommand          :  N  :
+: &60 : irq events - calling mode               :                        :                       :  Y  :
+: &64 : misc startup code routine ptr           :                        :                       :  N  :
+: &68 : misc plotter calc routine ptr           :                        :                       :  N  :
+: &6C : collision detection enable              :                        :                       :  Y  :
+: &70 : handler - indirected screen ptr         :                        :                       :  N  :
+: &74 : handler - indirected screen handler ptr :                        :                       :  N  :
+: &78 : plot non masked texture map             : FNhl_plottexture       : plottexture           :  N  :
+: &7C : processor speed rating (Not Avaliable)  :                        :                       :  -  :
+: &80 : plot masked sprite                      : FNhl_plotmaskspr       : plotmaskspr           :  N  :
+: &84 : plot sprite                             : FNhl_plotsprite        : plotsprite            :  N  :
+: &88 : polygon count for last frame rendered   :                        :                       :  -  :
+: &8C : handler - plot text ptr                 : FNhl_plottext          : plottext              :  N  :
+: &90 : handler - plot expanded sprite ptr      : FNhl_plotsprexpand     : plotsprexpand         :  N  :
+: &94 : plot vector line                        : FNhl_plotline          : plotline              :  N  :
+: &98 : handler - fade out ptr                  :                        :                       :  N  :
+: &9C : handler - fade out flag                 :                        :                       :  Y  :
+: &A0 : handler - morph objects                 :                        :                       :  Y  :
+: &A4 : plot scaled sprite                      : FNhl_plotscspr         : plotscspr             :  N  :
+: &A8 : plot masked scaled sprite               : FNhl_plotscmaskspr     : plotscmaskspr         :  N  :
+: &AC : plot speach bubble (Used by FTT)        :                        :                       :  N  :
+: &B0 : divide r0/r1                            : FNdivide01             : divide01              :  Y  :
+: &B4 : divide r0/r2                            : FNdivide02             : divide02              :  Y  :
+: &B8 : divide r1/r2                            : FNdivide12             : divide12              :  Y  :
+: &BC : divide r3/r2                            : FNdivide32             : divide32              :  Y  :
+:                                               :                        :                       :     :
+:--< Music Functions >--------------------------:------------------------:-----------------------:-----:
+:                                               :                        :                       :     :
+: &C0 : load music                              : FNmus_load             : mus_load              :  N  :
+: &C4 : kill music                              : FNmus_kill             : mus_kill              :  N  :
+: &C8 : enable music                            : FNmus_enable           : mus_enable            :  N  :
+: &CC : disable music                           : FNmus_disable          : mus_disable           :  N  :
+: &D0 : set music position                      : FNmus_position         : mus_position          :  N  :
+; &D4 : set interrupt flag                      : FNmus_interflag        : mus_interflag         :  N  :
+: &D8 : set fx flag                             : FNmus_fxflag           : mus_fxflag            :  N  :
+: &DC : set fx data                             : FNmus_setfx            : mus_setfx             :  N  :
+: &E0 : set params for sample                   : FNmus_setparams        : mus_setparamsforsample:  Y  :
+: &E4 : set music address                       : FNmus_setmusaddr       : mus_setmusaddr        :  N  :
+: &E8 : play sample                             : FNmus_sampleplay       : mus_sampleplay        :  Y  :
+: &EC : read header data ptr                    : FNmus_header           : mus_header            :  Y  :
+:                                               :                        :                       :     :
+:--< Global Data Ptrs >-------------------------:------------------------:-----------------------:-----:
+:                                               :                        :                       :     :
+: &F0 : ptr to sample header blocks             :                        ;                       :  -  :
+: &F4 : high score table data ptr               :                        :                       :  -  :
+: &F8 : global data block ptr                   :                        :                       :  -  :
+: &FC : application data block ptr              :                        :                       :  -  :
+:                                               :                        :                       :     :
+--------------------------------------------------------------------------------------------------------
+:                                                                                                :     :
+: &8200 - terminate TAG and report error                                                         :  N  :
+:                                                                                                :     :
+--------------------------------------------------------------------------------------------------------
+
+===============================
+Base = &8100 - Function Details
+===============================
+
+** Note : All registers are preserved unless otherwise stated **
+
+&00 - Heap Alloc
+----------------
+Entry - R0 = size of block required
+Exit  - R0 = block pointer
+
+&04 - Heap Free
+---------------
+Entry - R0 = block pointer
+
+&08 - Linklist Create
+---------------------
+Entry - R0 = pointer to header
+      - R1 = pointer to item
+
+&0C - Linklist Delete
+---------------------
+Entry - R0 = pointer to header
+      - R1 = pointer to item
+
+&10- Linklist Insert
+--------------------
+Entry - R0 = pointer to header
+      - R1 = pointer to item
+      - R2 = pointer to item to insert before (0=end)
+
+&14 - Find Resource From Label
+------------------------------
+Entry - R0 = resource number  (bit 31 set = report error if not found)
+      - R1 = pointer to label name
+Exit  - R0 = pointer to compiled resource item header
+
+&18 - Add Template(s) To World (Data is queued for IRQ use)
+-----------------------------------------------------------
+Entry - R0 = 00 (add world)
+      - R1 = ptr to paramter block
+             00/03 = ptr to world to merge
+             04/15 = position offset to merge (X/Y/Z)
+             16/27 = parameters for handlers 
+      - R2 = ptr to world header (to merge with)
+Entry - R0 = 01 (add template)
+      - R1 = ptr to template header data (copied - no linklist header)
+      - R2 = ptr to world header
+
+&1C - Del Template From World (Data is queued for IRQ use)
+----------------------------------------------------------
+Entry - R0 = 01 (del template)
+      - R1 = ptr to world template header
+      - R2 = ptr to world header
+
+&20 - Calc World Transform  (add wld x/y/z and then rotate)
+-----------------------------------------------------------
+Entry - R0-R2 = pos x/y/z
+      - R3-R5 = rot x/y/z
+      - R6-R9 = wld x/y/z
+Exit  - R0-R2 = new x/y/z
+
+&24- Object Transform (rotate then add wld x/y/z)
+-------------------------------------------------
+Entry - R0-R2 = pos x/y/z
+      - R3-R5 = rot x/y/z
+      - R6-R9 = obj x/y/z
+Exit  - R0-R2 = new x/y/z
+
+&28- Exec New System / Exec New App / Merge App Data
+----------------------------------------------------
+Entry - R0+R1 = see table below:-
+
+  ----------------------------------------------------------------------------------
+  : r0 : r1 : Description                                  : Exit            : IRQ :
+  :----+----+----------------------------------------------+------------------------
+  : >0 :  0 : exec r0 system                               :                 :  Y  :
+  : >0 : >0 : exec r0 system, return to r1 system          :                 :  Y  :
+  :  0 :  0 : quit to calling system                       :                 :  Y  :
+  :  0 : >0 : exec new app (R1=filename)                   :                 :  Y  :
+  :----+----+----------------------------------------------+-----------------:-----:
+  : -1 : >0 : load app data (R1=filename) (R2=crc word)    : R0 = app handle :  N  :
+  : -2 : >0 : kill app data (R1=handle)                    :                 :  N  :
+  ----------------------------------------------------------------------------------
+
+  load app data may be used at any point, but beware of memory fragmentation.
+  kill app should only be used on between systems event (18), or when there is no
+  item of data being used from within that app.
+
+  The crc word is only reqd if using encrypted compressed files from TAGpack.
+  This can be used for incorporating additional encryption (?via disk protection?).
+
+&2C - Quicksort
+---------------
+Entry - R10 = ptr to base of numbers to sort
+      - R11 = ptr to last of numbers to sort
+Misc  - Items within list consist of 2 words where:-
+      - 0/3 = value to sort
+      - 4/7 = misc data ptr
+
+&30 - Plot 3D World
+-------------------
+Plot a calculated 3D world
+(Internal Use Only - If this call is required contact TBA software.)
+
+&34 - Read Heap Size
+--------------------
+Exit  - R0 = heap size
+      - R1 = largest block
+      - R2 = total free
+
+&38 - Huffman Compress Data
+---------------------------
+Entry - R1 = ptr to source buffer      (word aligned)
+      - R2 = ptr to destination buffer (word aligned)
+      - R3 = size of source buffer
+      - R4 = size of destination buffer
+Exit  - R1 = ptr to next byte in source buffer
+      - R2 = ptr to next byte in dest.buffer
+      - R3 = bytes left in source buffer
+      - R4 = bytes left in destination buffer
+
+&3C - Huffman Decompress Data
+-----------------------------
+Entry - R1 = ptr to source buffer
+      - R2 = ptr to destination buffer
+Exit  - R1 = ptr to next byte in source buffer
+      - R2 = ptr to next byte in destination buffer
+
+&40 - Set Screen Mode
+---------------------
+Entry - R0 = screen mode
+
+&44 - Set Clipping Rectangle
+----------------------------
+Entry - R0    = clip rect number
+      - R1-R4 = crect data (eg.0,0,319,255)
+
+&48 - Set Vanishing Point
+-------------------------
+Entry - R0 = x vanishing point
+      - R1 = y vanishing point
+
+&4C - Get/Set Clipping Rectangle
+--------------------------------
+Entry - R0 = (-2 = current & table ptr) (-1 = read current) (0=game rectangle) (1=full screen rectangle)
+Exit  - R0 = current rectangle number (0=game ,1=full screen)
+        R1 = ptr to clip rectangle co-ords (leftx,topy,rightx,boty) eg.(0,0,319,255)
+             (if r0=-2 , r1=ptr to index table of ptrs , 0/3=crect1 ptr , 4/7=crect2 ptr)
+
+&50 - Set Plot Options
+---------------------------------
+Entry - R0 = function number
+      - R1+= parameters
+---------------------------------
+R0=0  - set double plot flag
+      - R1 = new flag value (0,1)
+---------------------------------
+
+&54 - TAG Misc Operation
+--------------------------------------------------------------------------------
+: R0 : Desc                  : Entry                 : Exit                    :
+:------------------------------------------------------------------------------:
+:  0 : read startup time     : none                  : r1=ptr to os time block :
+:  1 : read light table ptr  : none                  : r1=ptr to light table   :
+:  2 : set light table ptr   : r1=ptr to light table : none                    :
+:  3 : load light table      : r1=ptr to filename    : none                    :
+:  4 : free light table      : none                  : none                    :
+:  5 : read ls enable flag   : none                  : current ls enable flag  :
+:  6 : set ls enable flag    : new ls enable flag    : none                    :
+:  7 : set polysplit flag    : r1=flag (1=enable)    : none                    :
+:  8 : set polysplit zpos    : r1=new z distance     : none                    :
+:  9 : read angle constants  : none                  : r1=angcount,r2=angshift :
+--------------------------------------------------------------------------------
+
+&58 - Polygon Clipper
+---------------------
+Entry - R10 = ptr to source buffer
+      - R11 = ptr to output buffer
+      - R12 = number of points in source buffer (x,y) format
+Exit  - R12 = number of points in output buffer
+      - ZF  = status of R12 (ie zero or not!)
+
+&5C - Issue Command
+-------------------
+Entry - R0 = ptr to command string (passed to wimp_starttask)
+
+&60 - IRQ Events - Calling Mode
+--------------------------------
+0 = ticker interrupt (default)
+1 = vsync interrupt
+2 = preframe interrupt
+
+&64 - Handler - Misc Plotter Startup Code Ptr
+---------------------------------------------
+Entry - R2 = ptr to misc resource item
+
+&68 - Handler - Misc Plotter Call Ptr
+-------------------------------------
+Entry - R0  - ptr to world header
+      - R1  - ptr to buffer pos 1
+      - R2  - ptr to buffer pos 2
+      - R10 - ptr to next free space in face data buffer
+      - R11 - ptr to next free space in sort data buffer
+Exit  - R10 & R11 = updated as reqd
+       (other registers may be undefined)
+
+&6C - Collision enable flag
+---------------------------
+0 = collision detection disabled
+n = collision detection every n ticks (50hz ticks / see offset &60)
+
+&78 - Plot non masked texture map
+---------------------------------
+Entry - R0-R3 = x0-x3
+      - R4-R7 = y0-y3
+      - R9    = width of sprite
+      - R10   = depth of sprite
+      - R11   = ptr to screen
+      - R12   = ptr to sprite
+
+&80 - Plot Sprite
+-----------------
+Entry - R0  = x pos (word aligned) (done by plotter)
+      - R1  = y pos
+      - R2  = width (word aligned)
+      - R3  = depth
+      - R10 = ptr to sprite
+      - R11 = ptr to screen
+Exit  - none
+
+&84 - Plot Masked Sprite
+------------------------
+Entry - R0  = x pos (word aligned) (done by plotter)
+      - R1  = y pos
+      - R2  = width
+      - R3  = depth
+      - R10 = ptr to sprite
+      - R11 = ptr to screen
+Exit  - none
+
+&8C - Handler - Plot Text
+-------------------------
+Entry - R0  = xpos
+      - R1  = ypos
+      - R2  = font type/size
+      - R3  = ptr to text string
+      - R11 = ptr to screen
+
+&90 - Handler - Plot Expanded Sprite
+------------------------------------
+Entry - R0  = scale (size)
+      - R10 = ptr to sprite
+      - R11 = ptr to screen
+
+&94 - Plot Line - Points must be clipped to screen
+--------------------------------------------------
+Entry - R0  = x0
+      - R1  = y0
+      - R2  = x1
+      - R3  = x2
+      - R4  = colour (0-255)
+
+&98 - Handler - Fade Code Ptr - TAG Interrupts are Disabled
+-----------------------------------------------------------
+Entry - R0 = ptr to source screen
+      - R1 = ptr to destination screen
+
+&9C - Handler - Fade Flag
+-------------------------
+if set (not 0) when a new system is started up then the code which is pointed
+to by &8198 is called
+
+&A0 - Handler Morph Objects
+---------------------------
+avaliable if reqd (used in ARL) - contact TBA for details
+
+&A4 - plot scaled sprite
+------------------------
+Entry - R5  = xpos
+      - R6  = ypos
+      - R8  = scale * 512
+      - R9  = width
+      - R10 = depth
+      - R11 = ptr to screen
+      - R12 = ptr to sprite
+
+&A8 - plot masked scaled sprite
+-------------------------------
+Entry - R5  = xpos
+      - R6  = ypos
+      - R7  = mask
+      - R8  = scale * 512
+      - R9  = width
+      - R10 = depth
+      - R11 = ptr to screen
+      - R12 = ptr to sprite
+
+&AC - handler - reserved for TBA use
+------------------------------------
+
+&B0 - divide r0/r1
+------------------
+integer divide , R0 / R1
+
+&B4 - divide r0/r2
+------------------
+integer divide , R0 / R2
+
+&B8 - divide r1/r2
+------------------
+integer divide , R1 / R2
+
+&BC - divide r3/r2
+------------------
+integer divide , R3 / R2
+
+*****************************
+** Music Library Functions **
+*****************************
+
+Music Files are in arc tracker (MUSX) format as saved from Tracker (etc)
+A limited range of effects are currently implimented, but most importantly:-
+1) The samples can interrupt the music on an avaliable channel
+2) Returning to the desktop during the game is handled by TAG
+3) Music & Sample header data can be directly accessed to amend the values
+   much faster than using an SWI (e.g engine note pitch etc)
+4) Works without crashing on all machines!
+
+Channel Header Format
+---------------------
+00/03 = Pos in the sample (Offset in fix point)
+04/07 = Increment/Pitch (LowWord for fixpoint)
+08/11 = Sample Address
+12/15 = Length
+16/19 = Volume (0=Loud ... 255=Quiet)
+20/23 = Repeat flag 0=no, 1=yes
+24    = Value for Auto Volume up
+25    =    "    "      Volume down
+26    =    "    "      Pitch up
+27    =    "    "      Pitch down
+28    = Actual Info Byte
+29    = Actual Comm Byte
+30    = (Sound FX Flag)
+31    = Last legal tone/note
+
+Repeat Header Format
+--------------------
+00/31 = (8 channels) repeat length values (updated 3/11/95 - this is daft)
+32/63 = (8 channels) repeat start values
+
+
+&C0 - load music - loads music from disk (allocates memory)
+-----------------------------------------------------------
+Entry - R0 = ptr to music filename
+
+&C4 - kill music
+----------------
+Entry - R0 = stops music and removes memory if allocated
+
+&C8 - enable music - starts music playing
+-----------------------------------------
+
+&CC - disable music - stops music playing
+-----------------------------------------
+
+&D0 - set music position
+-------------------------------
+Entry - R0 = new offset within sequence
+
+&D4 - set interrupt flag - sets music player interrupt state
+------------------------------------------------------------
+Entry - R0 = new flag (0=disable, 1=enable)
+
+&D8 - set fx flag
+-----------------
+Entry - R0 = ignore sample play (sound fx) flag
+             (0 = fx enabled , 1 = fx disabled)
+
+&DC - set fx channels (stops music)
+-----------------------------------
+Entry - R0 = number of channels required
+
+&E0 - set parameters for sample
+-----------------------------------------------------
+Entry - R0    = channel number
+        R1-R8 = sample header data (see sample header format) (if R2<127, pitch in semitones [0-126])
+Exit  - channel header data updated, repeat data cleared to 0.
+
+&E4 - set music address
+-----------------------
+Entry - R0 = ptr to musx header
+
+&E8 - play sample (sample within MUSX file)
+-------------------------------------------
+Entry - R0 = sample number
+        R1 = pitch
+        R2 = channel
+
+&EC - read ptr to music header
+------------------------------
+Exit  - R0-R7 = ptr to channel headers (0-7)
+      - R8 = ptr to repeat offset start
+      - R9 = ptr to repeat offset length
+
+*****************
+** Global Data **
+*****************
+
+&F0 - ptr to sample headers
+---------------------------
+see music headers (above)
+
+&F4 - High score table data ptr
+-------------------------------
+1k - may be used in any format.
+This is set by the -hs <address> parameter passed on the command line
+or by TAG if not present.  This enables a shared highscore table across
+multiple copies of an application.
+
+&F8 - global data block ptr
+---------------------------
+4k - allocate by TAG upon startup.
+This block is kept between multiple TAG applications enabling global data
+throughout a game, whilst multi-loading.
+
+&FC - application data block ptr
+--------------------------------
+Not used by TAG.
+This vector may be used by applications for their own internal data area.
+
+------------------------------------
+&8200 - Report Error - Runtime Error
+------------------------------------
+
+Entry - R0 - ptr to RISC OS error block
+Exit  - call never returns (TAG is quit)

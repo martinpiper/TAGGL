@@ -1,0 +1,88 @@
+REM >Fountain
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Allocates work space for    **
+REM ** use by physics handlers.    **
+REM ** Copies over initial positions*
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="Fountain"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD irq-start
+
+.frm
+TEQ R0,#0:BEQ application_startup
+MOV R15,R14
+
+.irq
+TEQ R0,#0:BEQ tick
+MOV R15,R14
+
+.ball1name EQUS "Ball1             ":EQUB0:ALIGN
+.ball1ptr EQUD 0
+
+.tick
+SUBS R12,R12,#1
+MOVPL R15,R14
+LDR R12,[R1,#0]
+
+STMFD R13!,{R14}
+LDR R3,[R6,#8]                              ; Stack the template => value
+LDR R4,[R6,#16]
+ADD R1,R4,#200
+STR R1,[R6,#16]
+LDR R1,ball1ptr                             ; Get template =>
+STR R1,[R6,#8]                              ; Store template =>
+MOV R0,#1
+ADD R1,R6,#8
+MOV R2,R7
+BL add_template                             ; Add a smoke cloud
+STR R3,[R6,#8]                              ; Unstack template =>
+STR R4,[R6,#16]
+LDMFD R13!,{R15}
+
+.application_startup
+STMFD R13!,{R14}
+MOV R0,#2
+ADR R1,ball1name
+BL find_resource
+LDRVC R0,[R0,#0]
+STR R0,ball1ptr
+LDMFD R13!,{R15}
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+FNhandlerlib                              ; stub routines for library calls
+;FNhl_findresource
+;FNhl_addtemplate
+
+]
+NEXT
+ENDPROC

@@ -1,0 +1,43 @@
+---------------------------
+TAG Runtime Template Format
+(C)1995 TBA Software
+---------------------------
+
+Template Header
+===============
+00/03 : number of items in depth list
+        (bit31 = lightsource this template flag)
+   04+: depth list
+
+Depth List
+----------
+00/03 : ptr to object   (-1=last)
+04/07 : depth           (not included if ptr=-1)
+
+Handler List Header
+===================
+00/03 : number of handlers
+
+Handler List
+------------
+00/03 : ptr to handler
+04/19 : data words
+
+
+Notes
+=====
+1) The depth list has a -1 at the end!
+2) To calculate the offset to the handler list the following code can be used:-
+
+                    LDR reg,ptr_to_template
+                    LDR tmp,[reg],#12
+                    ADD reg,reg,tmp,LSL#3
+
+3) The bounding box size can be found at offset 08/11 using the header ptr
+   returned from find resource, ie:-
+
+                    MOV R0,#2+error_flag   ; type template, generates error
+                    ADR R1,template_name   ; null terminated template name
+                    BL find_resource
+                    LDR R1,[R0,#8]         ; template box size
+                    LDR R0,[R0,#0]         ; ptr to template data

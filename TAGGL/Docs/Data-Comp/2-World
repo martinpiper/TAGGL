@@ -1,0 +1,20 @@
+------------------------------------
+Game Editor Saved World Format V1.01
+(C)1993 Element 114 Software
+------------------------------------
+
+World Template Headers
+----------------------
+00/03 : compiled template number (-1 = last)
+04/07 : X centre position
+08/11 : Y centre position
+12/15 : Z centre position
+16/19 : X rotation
+20/23 : Y rotation
+24/27 : Z rotation
+28/31 : X scale (*256)
+32/35 : Y scale (*256)
+36/39 : Z scale (*256)
+40/43 : collision distance (from centre)
+44/47 : data word (0)
+48/51 : data word (1)

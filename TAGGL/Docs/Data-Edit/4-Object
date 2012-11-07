@@ -1,0 +1,56 @@
+----------------------------------------
+Game Editor Internal Object Format V1.01
+(C)1993 Element 114 Software
+----------------------------------------
+
+(  Item Types                                  )
+(  ==========                                  )
+(  00/01 = vector shape      (filled/outline)  )
+(  02/03 = mapped sprite     (normal/masked)   )
+(  04/05 = scaled sprite     (normal/masked)   )
+(  06/07 = sprite            (normal/masked)   )
+
+Object Header
+=============
+00/03 : pointer to first vertex                (0=none)
+04/07 : pointer to last vertex                 (0=none)
+08/11 : pointer to first collision table entry (0=none)
+12/15 : pointer to last collision table entry  (0=none)
+16/19 : pointer to first object item           (0=none)
+20/23 : pointer to last object item            (0=none)
+24/47 : viewpoint data
+48/87 : position data
+88/107: lightsource
+
+Object Item
+-----------
+00/03 : pointer to next in chain (0=last)
+04/07 : pointer to prev in chain (0=first)
+08/11 : item type
+12/15 : desc word (1)
+16/19 : desc word (2)
+20/23 : pointer to first vertex table entry (0=none)
+24/27 : pointer to last vertex table entry (0=none)
+28/31 : 0
+32/47 : extra texture data (x0/y0,x1/y1,x2/y2,x3/y3) (*16384)
+
+Vertex Table Entry
+------------------
+00/03 : pointer to next in chain (0=last)
+04/07 : pointer to prev in chain (0=first)
+08/11 : vertex number
+
+Vertex
+======
+00/03 : pointer to next in chain (0=last)
+04/07 : pointer to prev in chain (0=first)
+08/11 : x co-ord
+12/15 : y co-ord
+16/19 : z co-ord
+
+Collision Table Entry
+---------------------
+00/03 : pointer to next in chain (0=last)
+04/07 : pointer to prev in chain (0=first)
+08/11 : vertex number
+12/15 : collision distance

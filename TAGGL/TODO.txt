@@ -1,0 +1,102 @@
+Could probably do with some fake sample headers to stop a handler exception at startup
+
+
+
+// MPi: TODO: 04/15 = misc parameters (if added using add_world)
+
+
+
+// MPi: TODO: I think this needs some template data words ARM memory setup
+
+
+
+Look at merging BHP Track3 with Game. Load Game first then Track3?
+Check the original applicaton, it might load control first, then check handlers.
+
+
+
+Systems and Worlds, they need compiled (loaded) and live data. They get reinitialised from the compiled data.
+Every loaded resource need this allocated in the ARM memory:
+00/03 = ptr to compiled resource data
+04/07 = ptr to live resource data       
+08/11 = internal use  (bounding box size if template resource)
+12/15 = internal use  
+16/31 = resource name (padded with spaces)
+Don't worry about the vertex list updating for the MIME demo. Instead optimise for the general case which is static model verts.
+The live system and world data needs to be split into functions so the live data can be quickly converted to the C++ forma for each frame.
+Basically if the pre-frame code handler is called then mark the world template as dirty as well as the system.
+Then update data for those dirty objects from the live data.
+
+
+
+Run the collision update and the event
+
+
+
+Add TAG function 8118
+
+
+
+Breakpoint on unimplemented TAG functions in CallbackTAGFunction.
+Then implement.
+
+
+
+Transparency. The problem with this is that is uses face flags. Not sprite mask data.
+
+
+
+
+
+
+Move sTheARM into a new instance within ARMCore
+
+
+
+If a handler generates an exception then warn once if debug is turned on and stop it from running in the future.
+The exception will need to be passed back from ARMCore.
+
+
+
+Check the object scale is fed through from the world template.
+
+
+
+Also check the world template scale is copied over.
+
+
+
+// MPi: TODO: Find the distance of the current matrix from the viewpoint and choose the object
+
+
+
+Optimise the model draw to use compiled GL.
+// MPi: TODO: Instead of verts per triangle use glGenLists, glNewList and GL_COMPILE for the base object
+
+
+
+// MPi: TODO: Produce a proper heap that can free blocks. At the moment this just increments.
+
+
+
+// MPi: TODO: Implement proper TAG ARM internal data structures
+
+
+
+// MPi: TODO: When the system is re-run then this needs to be copied from the loaded data
+// MPi: TODO: When the world is re-run then this needs to be copied from the loaded data
+
+
+
+// MPi: TODO: Need temp work area in R10
+
+
+
+// MPi: TODO: The live world needs a proper linklist
+
+
+
+// MPi: TODO: Fill in proper template live data like object and handler data
+
+
+

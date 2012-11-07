@@ -1,0 +1,131 @@
+REM >MoveAround
+REM ********************************
+REM **    Move Around 3D World    **
+REM **    (C)1995 TBA Software    **
+REM ** Programming by Alan Peters **
+REM ********************************
+
+REM ** Data0 = Rotation Speed  (eg. 1)
+REM ** Data1 = Movement Speed  (eg. 50)
+
+miny=64
+
+f$="MoveAround"
+
+PROCinit
+PROCassemble
+PROCsave("")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD 0
+EQUD irq-start
+
+.irq
+TEQ R0,#0:BEQ irq_ticker
+MOV R15,R14
+
+; ***************
+; ** Main Code **
+; ***************
+
+.irq_ticker
+STMFD R13!,{R0-R12,R14}
+LDR R10,[R1,#0]
+LDR R11,[R1,#4]
+FNcheckinkey(-1)
+MOVEQ R10,R10,LSL#2
+MOVEQ R11,R11,LSL#2
+LDR R9,[R9,#4]
+BL check_rotx
+BL check_roty
+BL check_rotz
+BL check_movf
+BL check_movv
+LDMFD R13!,{R0-R12,R15}
+
+.check_rotx FNcheck_rot(20,-87,-103)
+.check_roty FNcheck_rot(24,-67,-98)
+.check_rotz FNcheck_rot(28,-66,-82)
+
+.check_movf FNcheck_forwards
+.check_movv FNcheck_vertical
+
+]
+NEXT
+ENDPROC
+
+DEFFNcheck_rot(ofst,key1,key2)
+[OPTp%
+STMFD R13!,{R14}
+LDR R8,[R9,#ofst]
+FNcheckinkey(key1)
+SUBEQ R8,R8,R10
+FNcheckinkey(key2)
+ADDEQ R8,R8,R10
+CMP R8,#0
+ADDLT R8,R8,#angcount
+CMP R8,#angcount
+SUBGE R8,R8,#angcount
+STR R8,[R9,#ofst]
+LDMFD R13!,{R15}
+]
+=0
+
+DEFFNcheck_forwards
+[OPTp%
+STMFD R13!,{R14}
+LDR R6,[R9,#8]
+LDR R7,[R9,#16]
+FNcheckinkey(-80)
+LDREQ R2,[R9,#24]
+LDREQ R0,[R5,R2,LSL#2]
+LDREQ R1,[R4,R2,LSL#2]
+MULEQ R0,R11,R0
+SUBEQ R6,R6,R0,ASR#angshift
+MULEQ R1,R11,R1
+ADDEQ R7,R7,R1,ASR#angshift
+FNcheckinkey(-105)
+LDREQ R2,[R9,#24]
+LDREQ R0,[R5,R2,LSL#2]
+LDREQ R1,[R4,R2,LSL#2]
+MULEQ R0,R11,R0
+ADDEQ R6,R6,R0,ASR#angshift
+MULEQ R1,R11,R1
+SUBEQ R7,R7,R1,ASR#angshift
+STR R6,[R9,#8]
+STR R7,[R9,#16]
+LDMFD R13!,{R15}
+]
+=0
+
+DEFFNcheck_vertical
+[OPTp%
+STMFD R13!,{R14}
+LDR R8,[R9,#12]
+FNcheckinkey(-73)
+ADDEQ R8,R8,R11
+FNcheckinkey(-104)
+SUBEQ R8,R8,R11
+CMP R8,#miny
+MOVLT R8,#miny
+STR R8,[R9,#12]
+LDMFD R13!,{R15}
+]
+=0

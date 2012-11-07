@@ -1,0 +1,12 @@
+-----------------------------------
+TAG Application Header Format V1.00
+-----------------------------------
+
+Application Header
+------------------
+00/03 = ptr to next app
+04/07 = ptr to prev app
+08/11 = ptr to data block
+12/15 = ptr to header block (loader only)
+16/31 = rfu
+32/128 = application file header

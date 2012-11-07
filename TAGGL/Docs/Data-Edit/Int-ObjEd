@@ -1,0 +1,11 @@
+---------------------------------------------------
+Game Editor Internal Object Editing Structure V1.01
+(C)1993 Element 114 Software
+---------------------------------------------------
+
+00/03 = pointer to resource header
+04/07 = pointer to resource item header
+08/11 = pointer to object data
+12/15 = pointer to object item
+16/27 = vertex selection link list
+28/31 = pointer to object world

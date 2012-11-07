@@ -1,0 +1,83 @@
+REM >Physics
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Allocates work space for    **
+REM ** use by physics handlers.    **
+REM ** Copies over initial positions*
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="Physics"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD irq-start
+
+.frm
+TEQ R0,#6:BEQ instance
+MOV R15,R14
+
+.irq
+TEQ R0,#0:BEQ tick
+MOV R15,R14
+
+.tick
+LDR R8,[R6,#52]
+LDMIA R8,{R0-R5}
+ADD R0,R0,R3
+ADD R1,R1,R4
+ADD R2,R2,R5
+STMIA R8,{R0-R2}
+MOV R0,R0,ASR#8
+MOV R1,R1,ASR#8
+MOV R2,R2,ASR#8
+ADD R6,R6,#12
+STMIA R6,{R0-R2}
+MOV R15,R14
+
+.instance
+STMFD R13!,{R14}
+MOV R0,#4*6
+BL heap_alloc
+STR R0,[R6,#52]
+MOV R8,R0
+ADD R6,R6,#12
+LDMIA R6,{R0-R2}
+MOV R0,R0,LSL#8
+MOV R1,R1,LSL#8
+MOV R2,R2,LSL#8
+STMIA R8!,{R0-R2}
+LDMFD R13!,{R15}
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+;FNhandlerlib                              ; stub routines for library calls
+FNhl_heapalloc
+
+]
+NEXT
+ENDPROC

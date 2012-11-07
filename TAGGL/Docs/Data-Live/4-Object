@@ -1,0 +1,54 @@
+-------------------------
+TAG Runtime Object Format
+(C)1995 TBA Software
+-------------------------
+
+Object Vertex Header
+====================
+00/03 : number of vertices
+   04+: vertex data
+
+Object Vertex Data
+------------------
+00/03 : x co-ord
+04/07 : y co-ord
+08/11 : z co-ord
+
+Object Collision Data Header
+============================
+00/03 : number of items in collision data list
+   04+: collision table data
+
+Object Collision Data
+---------------------
+00/03 : vertex number
+04/07 : collision distance
+
+Object Item Data
+================
+00/03 : item type              (-1=last)
+04/07 : desc word 1
+08/11 : desc word 2
+   12+: vertex list
+
+Object Vertex List
+------------------
+00/03 : vertex number          (-1=last)
+                               (-2=extended texture data)
+
+Extended Texture Data
+---------------------
+00/15 : texture bounds (x0,y0;x1,y1;x2,y2;x3,y3)
+
+Notes
+=====
+1) To calculate a ptr to the item data the following code can be used:-
+
+                      LDR reg,ptr_to_object
+                      LDR tmp,[reg],#4
+                      ADD reg,reg,tmp,LSL#2
+                      ADD reg,reg,tmp,LSL#3
+                      LDR tmp,[reg],#4
+                      ADD reg,reg,tmp,LSL#3
+                    
+                 

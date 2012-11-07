@@ -1,0 +1,19 @@
+-----------------------
+Known Problems - Jan 96
+----------------------
+
+Holograph Multiple Views - Object Editor
+----------------------------------------
+The selection list is not cleared properly in any but the first window, when
+deleting vertices.  To fix this problem clear the selection in all other
+views of the object before proceeding, otherwise a data abort may follow.
+
+Sprite Files
+------------
+Blank leading/Trailing pixels on a sprite are not supported.
+New format sprites are not supported.
+
+Masked Texture Maps
+-------------------
+Masked textures will only plot if sprites are 2^n values
+(ie 2,4,8,16,32,64,128 or 256).  This will be corrected shortly.

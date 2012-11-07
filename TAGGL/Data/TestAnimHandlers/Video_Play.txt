@@ -1,0 +1,78 @@
+REM >Video_Play
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Allocates work space for    **
+REM ** use by physics handlers.    **
+REM ** Copies over initial positions*
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="Video_Play"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD 0
+
+.frm
+TEQ R0,#0:BEQ application_startup
+TEQ R0,#12:BEQ pre_frame
+MOV R15,R14
+
+.tvname EQUS "TV":EQUB0:ALIGN
+.tvptr EQUD 0
+
+.application_startup
+STMFD R13!,{R14}
+MOV R0,#4+error_flag
+ADR R1,tvname
+BL find_resource
+LDRVC R0,[R0,#0]
+LDRVC R0,[R0,#12]
+STR R0,tvptr
+LDMFD R13!,{R15}
+
+.pre_frame
+STMFD R13!,{R12,R14}
+LDR R10,tvptr
+MOV R12,#320*256
+.loop
+]:FOR c%=0 TO 7:[OPTp%
+LDMIA R11!,{R0-R9}:STMIA R10!,{R0-R9}
+]:NEXT:[OPTp%
+SUBS R12,R12,#320
+BNE loop
+LDMFD R13!,{R12,R15}
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+FNhandlerlib                              ; stub routines for library calls
+;FNhl_findresource
+;FNhl_addtemplate
+
+]
+NEXT
+ENDPROC

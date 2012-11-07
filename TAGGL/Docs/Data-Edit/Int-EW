@@ -1,0 +1,51 @@
+----------------------------------------------
+Game Editor Internal Edit Window Format V1.01
+(C)1993 Element 114 Software
+----------------------------------------------
+
+00/03 = next in chain
+04/07 = prev in chain
+08/11 = id word
+12/15 = ref word
+16/19 = window handle
+20/23 = menu structure pointer
+24/31 = view window link list header
+32/39 = misc window link list header
+40/43 = pointer to world
+44/47 = group id word
+
+View Window
+-----------
+00/03 = next in chain
+04/07 = prev in chain
+08/11 = id word
+12/15 = ref word
+16/19 = window handle
+20/23 = pointer to view data
+24/27 = base icon number
+28/31 = number of view entries
+32/35 = type1 (entries 00-02) (0=none)
+36/39 = type2 (entries 03-05) (0=none)
+40/43 = type3 (entries 06-08) (0=none)
+44/47 = type4 (entries 09-11) (0=none)
+48/51 = flags
+        bit 0 = open with editwindow
+        bit 1 = redraw editwindow (single)
+        bit 2 = redraw editwindow (group)
+        bit 3 = open as menu
+
+Misc Window
+-----------
+00/03 = next in chain
+04/07 = prev in chain
+08/11 = id word
+12/15 = ref word
+16/19 = window handle
+20/23 = flags
+        bit 0 = open with editwindow
+        bit 1 = tool window flag
+        bit 2 = open as menu
+        bit 3 = open as submenu window
+        bit 4 = window is a pane
+24/27 = x offset
+28/31 = y offset

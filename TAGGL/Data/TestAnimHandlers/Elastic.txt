@@ -1,0 +1,68 @@
+REM >Elastic
+REM *********************************
+REM **   Handler Template V1.00    **
+REM ** Allocates work space for    **
+REM ** use by physics handlers.    **
+REM ** Copies over initial positions*
+REM **    (C)1995 TBA Software     **
+REM ** Programming by Martin Piper **
+REM *********************************
+
+f$="Elastic"
+
+PROCinit
+PROCassemble
+PROCsave("TestAnim")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD 0
+EQUD irq-start
+
+.irq
+TEQ R0,#1:BEQ hit_event
+MOV R15,R14
+
+.hit_event
+LDR R1,[R10,#16]
+TST R1,#1:BNE hit_event_cube
+MOV R15,R14
+
+.hit_event_cube
+LDR R0,[R10,#20]
+CMP R0,#0:MOVEQ R15,R14
+LDR R7,[R10,#4]
+LDR R6,[R6,#52]
+LDR R7,[R7,#52]
+ADD R6,R6,#12
+ADD R7,R7,#12
+LDMIA R6,{R0-R2}
+LDMIA R7,{R3-R5}
+STMIA R6,{R3-R5}
+STMIA R7,{R0-R2}
+MOV R15,R14
+
+; **************************
+; ** Link in Library Code **
+; **************************
+
+;FNhandlerlib
+]
+NEXT
+ENDPROC

@@ -1,0 +1,20 @@
+--------------------------------
+TAG Resource Header Format V1.00
+--------------------------------
+
+Resource Linklist Headers (*8)
+------------------------------
+00/03 = ptr to first resource header
+04/07 = ptr to last resource header
+
+Resource Header
+---------------
+00/03 = ptr to next resource header
+04/07 = ptr to prev resource header
+08/11 = app id (0=base, else =handle)
+
+12/15 = ptr to compiled data
+16/19 = ptr to live data (system+world only)
+20/23 = internal use
+24/27 = internal use (bounding box size if template)
+28/43 = name of resource (space padded)

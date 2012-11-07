@@ -1,0 +1,70 @@
+REM >Polycount
+REM ********************************
+REM **  Show Polygon Count V1.01  **
+REM **    (C)1995 TBA Software    **
+REM ** Programming by Alan Peters **
+REM ********************************
+
+f$="PolyCount"
+
+PROCinit
+PROCassemble
+PROCsave("")
+END
+
+DEFPROCinit
+LIBRARY "HG3DLib:UsefulLib":PROCinitusefullib:PROCinit_memcode:ON ERROR PROCerror
+LIBRARY "HG3DLib:HandlerLib":PROCinithandlerlib
+codesize%=32*1024
+DIM code% codesize%
+ENDPROC
+
+DEFPROCassemble
+FOR p%=12 TO 14 STEP 2
+P%=code%:O%=code%:L%=P%+codesize%
+[OPTp%
+
+; ***************************
+; ** Header & Event Checks **
+; ***************************
+
+.start
+EQUD frm-start
+EQUD 0
+
+.frm
+TEQ R0,#12:MOVNE R15,R14
+
+FNlibread(3,&88)
+
+SWI 256+31
+SWI 256+30
+SWI 256+0
+
+LDR R0,[R3,#4]
+ADR R1,aftbuffer
+MOV R2,#16
+SWI "OS_BinaryToDecimal"
+MOV R0,R1
+MOV R1,R2
+SWI "OS_WriteN"
+
+SWI 256+31
+SWI 256+35
+SWI 256+1
+
+LDR R0,[R3,#0]
+ADR R1,aftbuffer
+MOV R2,#16
+SWI "OS_BinaryToDecimal"
+MOV R0,R1
+MOV R1,R2
+SWI "OS_WriteN"
+
+MOV R15,R14
+
+.aftbuffer EQUD0:EQUD0:EQUD0:EQUD0
+
+]
+NEXT
+ENDPROC

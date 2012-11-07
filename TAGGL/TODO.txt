@@ -72,7 +72,9 @@ Also check the world template scale is copied over.
 
 Optimise the model draw to use compiled GL.
 // MPi: TODO: Instead of verts per triangle use glGenLists, glNewList and GL_COMPILE for the base object
-
+This is complicated by the fact that during execution the handlers can be modifying binary data in ARM memory.
+The ARM CPU will need some hooks to allow the OpenGL code to register for interesting parts fo memory and receive callbacks when certain locations are modified.
+Then when these callbacks are received they can cause the ARM memory to be reparsed into the OpenGL lists.
 
 
 // MPi: TODO: Produce a proper heap that can free blocks. At the moment this just increments.

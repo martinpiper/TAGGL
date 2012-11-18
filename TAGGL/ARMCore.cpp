@@ -10,12 +10,15 @@ using namespace simit;
 
 static arm_emulator sTheARM(false,true);
 
+// Depending on the build we can enable or disable some ARM debugging options.
 #ifdef _DEBUG
-//bool ARMCore::mDebuggingEnabled = false;
-bool ARMCore::mDebuggingEnabled = true;
+// This helps to narrow down unimplemented handlers
+bool ARMCore::mDebuggingEnabled = false;
+//bool ARMCore::mDebuggingEnabled = true;
 
-//bool ARMCore::mDisassemble = false;
-bool ARMCore::mDisassemble = true;
+// Disassemble executed ARM instructions
+bool ARMCore::mDisassemble = false;
+//bool ARMCore::mDisassemble = true;
 
 #else
 bool ARMCore::mDebuggingEnabled = false;

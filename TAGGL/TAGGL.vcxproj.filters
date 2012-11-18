@@ -165,5 +165,6 @@
   <ItemGroup>
     <None Include="Done.txt" />
     <None Include="TODO.txt" />
+    <None Include="..\ReadMe.txt" />
   </ItemGroup>
 </Project>

@@ -135,6 +135,7 @@
     <ClInclude Include="Inc\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\ReadMe.txt" />
     <None Include="Done.txt" />
     <None Include="TODO.txt" />
   </ItemGroup>

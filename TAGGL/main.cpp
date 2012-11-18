@@ -181,7 +181,8 @@ void init(void)
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, sizeX, sizeY, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 
-#if 0
+#if 1
+	// Read data files from the command line
 	DynamicMessageHelper file;
 
 	size_t pos;
@@ -225,6 +226,7 @@ void init(void)
 		gGame.mCurrentSystem = (System *) gGame.mResources[ROEditor::kSystem].begin()->second.mItem;
 	}
 #else
+	// Force what files to load from BHP to try to get this running. The BHP loader code seems to want to merge these three system files and run the track, so this is what we shall attempt to do.
 	DynamicMessageHelper file;
 	file.Read("Data\\BHPOutput\\Control",true);
 	gGame.ReadOutput(file);

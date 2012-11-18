@@ -1,5 +1,6 @@
 Source code to render TBA Software's TAG data files.
 It is a Windows application but most of the code is cross platform. It uses OpenGL to render. As is common with most of my projects it also reuses some of the ReplicaNet amalgamated source library from www.replicanet.com
+Because it's a Windows application it needs to be able to emaulate the ARM, so it uses Wei Qin's ARM emulator code with some tweaks to allow 26 Bit ARM emulation.
 
 The eventual goal is to be able to load BHP data files and see the game work. But this will require quite a lot of work to get all the supported handler and engine functionality working.
 

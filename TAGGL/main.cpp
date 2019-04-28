@@ -186,12 +186,12 @@ void init(void)
 	DynamicMessageHelper file;
 
 	size_t pos;
-	while ( (pos = appPath.find_first_of('\"')) != std::string::npos)
+	while ( (pos = appPath.find_first_of('\"')) == 0)
 	{
-		appPath.erase(pos);
+		appPath.erase(pos , 1);
 		pos = appPath.find_first_of('\"');
 	}
-	if ( !appPath.empty() && (appPath[appPath.length()-1] == '\"') )
+	if ( !appPath.empty() && (appPath.c_str()[appPath.length()-1] == '\"') )
 	{
 		appPath.erase(appPath.length()-1);
 	}

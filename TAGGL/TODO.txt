@@ -23,7 +23,7 @@ Every loaded resource need this allocated in the ARM memory:
 12/15 = internal use  
 16/31 = resource name (padded with spaces)
 Don't worry about the vertex list updating for the MIME demo. Instead optimise for the general case which is static model verts.
-The live system and world data needs to be split into functions so the live data can be quickly converted to the C++ forma for each frame.
+The live system and world data needs to be split into functions so the live data can be quickly converted to the C++ form for each frame.
 Basically if the pre-frame code handler is called then mark the world template as dirty as well as the system.
 Then update data for those dirty objects from the live data.
 
@@ -73,7 +73,7 @@ Also check the world template scale is copied over.
 Optimise the model draw to use compiled GL.
 // MPi: TODO: Instead of verts per triangle use glGenLists, glNewList and GL_COMPILE for the base object
 This is complicated by the fact that during execution the handlers can be modifying binary data in ARM memory.
-The ARM CPU will need some hooks to allow the OpenGL code to register for interesting parts fo memory and receive callbacks when certain locations are modified.
+The ARM CPU will need some hooks to allow the OpenGL code to register for interesting parts of memory and receive callbacks when certain locations are modified.
 Then when these callbacks are received they can cause the ARM memory to be reparsed into the OpenGL lists.
 
 

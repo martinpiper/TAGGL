@@ -91,3 +91,12 @@ Note PSR VC or VS flag.
 
 
 Loaded Templates need TAG memory allocated. Do this after all the templates have been loaded and parsed.
+
+
+
+
+* "Data\TestAnim" : OK
+
+
+* "Data\BHPOutput\Track2" : OK, on its own the surfboards on the beach move around nicely
+

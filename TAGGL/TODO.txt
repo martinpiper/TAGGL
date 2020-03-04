@@ -1,3 +1,33 @@
+* // MPi: TODO: Implement properly
+	Several operations are not handled properly here
+
+
+
+* "Data\TestAnim2" needs: CallbackTAGFunction $811c
+	&1C - Del Template From World (Data is queued for IRQ use)
+
+
+
+* "Data\MIME" throws ARM handler exceptions: Template $143e0 Running Event Frame:10 for 'Trex            ' handler 1='MIME            '
+	00047130 : e8aa0007 stmia r10!, {r0, r1, r2}
+	Assertion failed!
+
+
+
+* "Data\BHPOutput\Control" + "Data\BHPOutput\Game" + "Data\BHPOutput\Track2" needs: CallbackTAGFunction $8124
+	&24- Object Transform (rotate then add wld x/y/z)
+
+
+
+* "Data\BHPOutput\Control" needs:
+	CallbackTAGFunction $8154
+		Several types
+	CallbackTAGFunction $8140
+	CallbackTAGFunction $8128
+		&28- Exec New System / Exec New App / Merge App Data
+		Template $142b0 Running Event Frame:4 for 'Control         ' handler 0='CtrlApp         '
+
+
 Could probably do with some fake sample headers to stop a handler exception at startup
 
 
@@ -12,6 +42,9 @@ Could probably do with some fake sample headers to stop a handler exception at s
 
 Look at merging BHP Track3 with Game. Load Game first then Track3?
 Check the original applicaton, it might load control first, then check handlers.
+	According to C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\BHP\Output\!Run,feb
+	Control is loaded on its own first
+
 
 
 

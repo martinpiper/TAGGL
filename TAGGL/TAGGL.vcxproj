@@ -136,6 +136,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\ReadMe.txt" />
+    <None Include="Docs\Library\Events" />
+    <None Include="Docs\Library\Functions" />
+    <None Include="Docs\Library\Handlers" />
+    <None Include="Docs\Library\HGevents" />
+    <None Include="Docs\Manual" />
     <None Include="Done.txt" />
     <None Include="TODO.txt" />
   </ItemGroup>

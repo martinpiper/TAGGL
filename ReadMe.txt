@@ -24,3 +24,13 @@ bool ARMCore::mDisassemble
 
 
 RPCEmu is the emulator used
+C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu
+RPCEmu-Interpreter.exe
+	HostFS:$.BHP.Output
+	!Run
+
+
+
+Command line arguments:
+"Data\Demo"
+"Data\TestAnim1"

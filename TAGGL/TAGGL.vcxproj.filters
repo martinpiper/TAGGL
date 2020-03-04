@@ -19,6 +19,12 @@
     <Filter Include="Source Files\ArcEmu">
       <UniqueIdentifier>{15ac46de-5a30-4eec-a570-ad9a3b536d51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Docs">
+      <UniqueIdentifier>{c939aafe-ba5a-4253-a68b-c46521446c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Docs\Library">
+      <UniqueIdentifier>{d3df1464-5f9f-44d1-96b6-53d7caa2c319}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -166,5 +172,20 @@
     <None Include="Done.txt" />
     <None Include="TODO.txt" />
     <None Include="..\ReadMe.txt" />
+    <None Include="Docs\Library\Events">
+      <Filter>Docs\Library</Filter>
+    </None>
+    <None Include="Docs\Library\Functions">
+      <Filter>Docs\Library</Filter>
+    </None>
+    <None Include="Docs\Library\Handlers">
+      <Filter>Docs\Library</Filter>
+    </None>
+    <None Include="Docs\Library\HGevents">
+      <Filter>Docs\Library</Filter>
+    </None>
+    <None Include="Docs\Manual">
+      <Filter>Docs</Filter>
+    </None>
   </ItemGroup>
 </Project>

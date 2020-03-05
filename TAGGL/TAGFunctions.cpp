@@ -112,10 +112,10 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 					World *from = (World *) fromItem;
 					World *to = (World *) toItem;
 
-					std::list<World::WorldTemplate>::iterator st = from->mTemplates.begin();
+					std::list<World::WorldTemplate*>::iterator st = from->mTemplates.begin();
 					while (st != from->mTemplates.end())
 					{
-						World::WorldTemplate &temp = *st++;
+						World::WorldTemplate *temp = *st++;
 						to->mTemplates.push_back(temp);
 					}
 				}
@@ -149,29 +149,30 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 					{
 						World *world = (World*) worldItem;
 
-						World::WorldTemplate temp;
-						temp.mARMAddress = ARMHeapAlloc(128);
-						WriteMemory(temp.mARMAddress + 12,part.GetCurrentPosition(), 9 * 4);
+						World::WorldTemplate *temp = new World::WorldTemplate();
+						temp->mARMAddress = ARMHeapAlloc(128);
+						WriteMemory(temp->mARMAddress + 12,part.GetCurrentPosition(), 9 * 4);
+						mARMAddressToBaseItem[temp->mARMAddress] = temp;
 
 						// MPi: TODO: I think this needs some template data words ARM memory setup
 
-						part >> temp.mIPosition;
-						part >> temp.mIRotation;
-						part >> temp.mIScale;
+						part >> temp->mIPosition;
+						part >> temp->mIRotation;
+						part >> temp->mIScale;
 
-						part >> temp.mICollisionDistance;
-						part >> temp.mDataWords[0];
-						part >> temp.mDataWords[1];
+						part >> temp->mICollisionDistance;
+						part >> temp->mDataWords[0];
+						part >> temp->mDataWords[1];
 
-						temp.mTemplate = (Template*) item;
+						temp->mTemplate = (Template*) item;
 
 						world->mTemplates.push_back(temp);
 						error = false;
 
-						if (temp.mTemplate->mARMCompiledAddress)
+						if (temp->mTemplate->mARMCompiledAddress)
 						{
 							// Point the world template to the template data
-							WriteMemory(temp.mARMAddress+8,&temp.mTemplate->mARMCompiledAddress,4);
+							WriteMemory(temp->mARMAddress+8,&temp->mTemplate->mARMCompiledAddress,4);
 						}
 					}
 					else
@@ -179,6 +180,51 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 						if (ARMCore::mDebuggingEnabled)
 						{
 							assert(!"kTAGFunctionAddTemplate bad resource types being added");
+						}
+					}
+				}
+			}
+			break;
+		}
+
+		case kTAGFunctionDeleteTemplate:
+		{
+			mNeedToSendSystemInits = true;
+
+			unsigned int op = GetRegister(0);
+			if (op == 1)
+			{
+				unsigned int taddr;
+				taddr = GetRegister(1);
+				BaseItem *item = 0;
+				item = mARMAddressToBaseItem[taddr];
+				BaseItem *worldItem = 0;
+				taddr = GetRegister(2);
+				worldItem = mARMAddressToBaseItem[taddr];
+
+				if (!item || !worldItem)
+				{
+					if (ARMCore::mDebuggingEnabled)
+					{
+						assert(!"Could not resolve the template or world resource address");
+					}
+				}
+				else
+				{
+					if ((worldItem->mOriginalResourceTypeIndex == kWorld) && (item->mOriginalResourceTypeIndex == kWorldTemplate))
+					{
+						World *world = (World*)worldItem;
+						World::WorldTemplate *worldTemplate = (World::WorldTemplate*)item;
+						Template *theTemplate = worldTemplate->mTemplate;
+
+						world->mTemplates.remove(worldTemplate);
+						error = false;
+					}
+					else
+					{
+						if (ARMCore::mDebuggingEnabled)
+						{
+							assert(!"kTAGFunctionDeleteTemplate bad resource types being added");
 						}
 					}
 				}

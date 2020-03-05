@@ -20,11 +20,10 @@ public:
 
 	void Render(void);
 
-	struct WorldTemplate
+	struct WorldTemplate : public BaseItem
 	{
 		WorldTemplate();
 
-		unsigned int mARMAddress;
 		std::vector<unsigned int> mARMPrivateWords;
 		bool mSysInitEventSent;
 		bool mInitEventSent;
@@ -39,7 +38,7 @@ public:
 		int mDataWords[2];
 	};
 
-	std::list<WorldTemplate> mTemplates;
+	std::list<WorldTemplate*> mTemplates;
 };
 
 };

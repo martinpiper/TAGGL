@@ -318,25 +318,26 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					while (index != -1)
 					{
 						assert(index < numResourceItems[kTemplate]);
-						World::WorldTemplate temp;
-						temp.mResourceIndex = index;
+						World::WorldTemplate *temp = new World::WorldTemplate();
+						temp->mResourceIndex = index;
 
 						// MPi: TODO: Implement proper TAG ARM internal data structures
-						temp.mARMAddress = ARMHeapAlloc(128);
-						WriteMemory(temp.mARMAddress + 12,part.GetCurrentPosition(), 9 * 4);
+						temp->mARMAddress = ARMHeapAlloc(128);
+						WriteMemory(temp->mARMAddress + 12,part.GetCurrentPosition(), 9 * 4);
 
-						part >> temp.mIPosition;
-						part >> temp.mIRotation;
-						part >> temp.mIScale;
+						part >> temp->mIPosition;
+						part >> temp->mIRotation;
+						part >> temp->mIScale;
 
-						part >> temp.mICollisionDistance;
-						part >> temp.mDataWords[0];
-						part >> temp.mDataWords[1];
+						part >> temp->mICollisionDistance;
+						part >> temp->mDataWords[0];
+						part >> temp->mDataWords[1];
 
-						WriteMemory(temp.mARMAddress + 52,&temp.mDataWords[0], 4);
-						WriteMemory(temp.mARMAddress + 56,&temp.mDataWords[1], 4);
+						WriteMemory(temp->mARMAddress + 52,&temp->mDataWords[0], 4);
+						WriteMemory(temp->mARMAddress + 56,&temp->mDataWords[1], 4);
 
 						world->mTemplates.push_back(temp);
+						mARMAddressToBaseItem[temp->mARMAddress] = temp;
 
 						part >> index;
 					}
@@ -589,18 +590,18 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 	for (ind = 0; ind < loadedWorlds.size() ; ind++ )
 	{
 		World *world = loadedWorlds[ind];
-		std::list<World::WorldTemplate>::iterator st;
+		std::list<World::WorldTemplate*>::iterator st;
 		st = world->mTemplates.begin();
 		while (st != world->mTemplates.end())
 		{
-			World::WorldTemplate &temp = *st++;
-			if (temp.mResourceIndex >= 0)
+			World::WorldTemplate *temp = *st++;
+			if (temp->mResourceIndex >= 0)
 			{
-				temp.mTemplate = loadedTemplates[temp.mResourceIndex];
-				if (temp.mARMAddress && temp.mTemplate && temp.mTemplate->mARMCompiledAddress)
+				temp->mTemplate = loadedTemplates[temp->mResourceIndex];
+				if (temp->mARMAddress && temp->mTemplate && temp->mTemplate->mARMCompiledAddress)
 				{
 					// Point the world template to the template data
-					WriteMemory(temp.mARMAddress+8,&temp.mTemplate->mARMCompiledAddress,4);
+					WriteMemory(temp->mARMAddress+8,&temp->mTemplate->mARMCompiledAddress,4);
 				}
 			}
 		}
@@ -780,61 +781,61 @@ bool ROEditor::SendEventToAllHandlers(const unsigned int event)
 	return true;
 }
 
-bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate &temp, const unsigned int event, const bool frame)
+bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame)
 {
-	if ((event == 4) && temp.mSysInitEventSent)
+	if ((event == 4) && temp->mSysInitEventSent)
 	{
 		return false;
 	}
-	if ((event == 6) && temp.mInitEventSent)
+	if ((event == 6) && temp->mInitEventSent)
 	{
 		return false;
 	}
 	if (event == 4)
 	{
-		temp.mSysInitEventSent = true;
+		temp->mSysInitEventSent = true;
 	}
 	else if (event == 6)
 	{
-		temp.mInitEventSent = true;
+		temp->mInitEventSent = true;
 	}
 
-	if (temp.mTemplate)
+	if (temp->mTemplate)
 	{
 		bool executed = false;
 		size_t i;
-		for( i = 0 ; i < temp.mTemplate->mHandlers.size() ; i++)
+		for( i = 0 ; i < temp->mTemplate->mHandlers.size() ; i++)
 		{
-			if (temp.mTemplate->mHandlers[i].mHandler && (temp.mTemplate->mHandlers[i].mHandler->mSize >= 8))
+			if (temp->mTemplate->mHandlers[i].mHandler && (temp->mTemplate->mHandlers[i].mHandler->mSize >= 8))
 			{
 				unsigned int offset;
 				unsigned int handOffset = frame?0:4;
-				if (ReadMemory(temp.mTemplate->mHandlers[i].mHandler->mARMCompiledAddress + handOffset,&offset,sizeof(offset)))
+				if (ReadMemory(temp->mTemplate->mHandlers[i].mHandler->mARMCompiledAddress + handOffset,&offset,sizeof(offset)))
 				{
 					if (offset)
 					{
-						if (temp.mARMPrivateWords.size() != temp.mTemplate->mHandlers.size())
+						if (temp->mARMPrivateWords.size() != temp->mTemplate->mHandlers.size())
 						{
-							temp.mARMPrivateWords.resize(temp.mTemplate->mHandlers.size(),0);
+							temp->mARMPrivateWords.resize(temp->mTemplate->mHandlers.size(),0);
 						}
 						if (ARMCore::mDisassemble)
 						{
 							char buffer[256];
-							sprintf(buffer,"Template $%x Running Event %s:%d for '%s' handler %d='%s'\n",temp.mARMAddress,frame?"Frame":"IRQ",event,temp.mTemplate->mOriginalResourceName.c_str(), i, temp.mTemplate->mHandlers[i].mHandler->mOriginalResourceName.c_str());
+							sprintf(buffer,"Template $%x Running Event %s:%d for '%s' handler %d='%s'\n",temp->mARMAddress,frame?"Frame":"IRQ",event,temp->mTemplate->mOriginalResourceName.c_str(), i, temp->mTemplate->mHandlers[i].mHandler->mOriginalResourceName.c_str());
 							OutputDebugStringA(buffer);
 						}
 
-						if (temp.mTemplate->mHandlers[i].mHandler->mOriginalResourceName == "CarPos          ")
+						if (temp->mTemplate->mHandlers[i].mHandler->mOriginalResourceName == "CarPos          ")
 						{
 							int a = 0;
 						}
 
-						SetPC(temp.mTemplate->mHandlers[i].mHandler->mARMCompiledAddress + offset);
+						SetPC(temp->mTemplate->mHandlers[i].mHandler->mARMCompiledAddress + offset);
 						SetRegister(0,event);
-						SetRegister(1,temp.mTemplate->mHandlers[i].mARMAddress);
+						SetRegister(1,temp->mTemplate->mHandlers[i].mARMAddress);
 						SetRegister(4,mARMCosTableAddress);
 						SetRegister(5,mARMSinTableAddress);
-						SetRegister(6,temp.mARMAddress);
+						SetRegister(6,temp->mARMAddress);
 						SetRegister(7,world->mARMAddress);		// World resource header
 						if (systemWorld)
 						{
@@ -845,9 +846,9 @@ bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World 
 							SetRegister(9,mCurrentSystem->mARMAddress);		// System resource header
 						}
 						SetRegister(11,0x10000000);	// The screen
-						SetRegister(12,temp.mARMPrivateWords[i]);
+						SetRegister(12,temp->mARMPrivateWords[i]);
 						Execute();
-						temp.mARMPrivateWords[i] = GetRegister(12);
+						temp->mARMPrivateWords[i] = GetRegister(12);
 						executed = true;
 					}
 				}
@@ -862,8 +863,8 @@ bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World 
 		{
 			// Copy positions back again
 			// MPi: TODO: Do a proper transfer of this data
-			ReadMemory(temp.mARMAddress + 12,&temp.mIPosition,3*4);
-			ReadMemory(temp.mARMAddress + 12 + (3*4),&temp.mIRotation,3*4);
+			ReadMemory(temp->mARMAddress + 12,&temp->mIPosition,3*4);
+			ReadMemory(temp->mARMAddress + 12 + (3*4),&temp->mIRotation,3*4);
 		}
 
 	}
@@ -884,11 +885,11 @@ bool ROEditor::SendEventToRunningObjects(const unsigned int event, const bool fr
 				st++;
 				if (world)
 				{
-					std::list<World::WorldTemplate>::iterator st;
+					std::list<World::WorldTemplate*>::iterator st;
 					st = world->mTemplates.begin();
 					while (st != world->mTemplates.end())
 					{
-						World::WorldTemplate &temp = *st++;
+						World::WorldTemplate *temp = *st++;
 
 						// If the event number is explicitly sent then assume we know what we are doing and send it without checks
 						if ( (event == 4) || (event == 6) )
@@ -897,11 +898,11 @@ bool ROEditor::SendEventToRunningObjects(const unsigned int event, const bool fr
 						}
 						else
 						{
-							if (!temp.mSysInitEventSent)
+							if (!temp->mSysInitEventSent)
 							{
 								SendEventToWorldTemplate(systemWorld, world, temp, 4);	// Send init
 							}
-							if (!temp.mInitEventSent)
+							if (!temp->mInitEventSent)
 							{
 								SendEventToWorldTemplate(systemWorld, world, temp, 6);	// Send init
 							}

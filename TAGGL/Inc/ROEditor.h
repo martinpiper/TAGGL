@@ -35,7 +35,7 @@ public:
 
 	bool SendEventToAllHandlers(const unsigned int event);
 
-	bool SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate &temp, const unsigned int event, const bool frame = true);
+	bool SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
 
 	bool SendEventToRunningObjects(const unsigned int event, const bool frame = true);
 
@@ -49,7 +49,9 @@ public:
 		kFaceList,
 		kHandler,
 		kMiscData,
-		kMaxResourceTypes		// Must be the last one in the list
+		kMaxResourceTypes,		// Must be the last one in the list for loaded resource types
+		// Code defined types
+		kWorldTemplate
 	};
 
 	struct ResourceItem

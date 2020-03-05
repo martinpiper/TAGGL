@@ -100,3 +100,6 @@ Loaded Templates need TAG memory allocated. Do this after all the templates have
 
 * "Data\BHPOutput\Track2" : OK, on its own the surfboards on the beach move around nicely
 
+
+* "Data\TestAnim2" needs: CallbackTAGFunction $811c
+	&1C - Del Template From World (Data is queued for IRQ use)

@@ -3,11 +3,6 @@
 
 
 
-* "Data\TestAnim2" needs: CallbackTAGFunction $811c
-	&1C - Del Template From World (Data is queued for IRQ use)
-
-
-
 * "Data\MIME" throws ARM handler exceptions: Template $143e0 Running Event Frame:10 for 'Trex            ' handler 1='MIME            '
 	00047130 : e8aa0007 stmia r10!, {r0, r1, r2}
 	Assertion failed!

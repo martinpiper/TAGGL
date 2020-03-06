@@ -189,8 +189,6 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 
 		case kTAGFunctionDeleteTemplate:
 		{
-			mNeedToSendSystemInits = true;
-
 			unsigned int op = GetRegister(0);
 			if (op == 1)
 			{
@@ -228,6 +226,49 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 						}
 					}
 				}
+			}
+			break;
+		}
+
+		case kTAGFunctionExecNew:
+		{
+			char name[17];
+			name[16] = '\0';
+			unsigned int r0 = GetRegister(0);
+			unsigned int r1 = GetRegister(1);
+			if (r0 == 0 && r1 != 0)
+			{
+				if (ReadMemory(r1, name, 16))
+				{
+					error = false;
+					if (ARMCore::mDebuggingEnabled)
+					{
+						assert(!"TODO");
+					}
+				}
+				else if (ARMCore::mDebuggingEnabled)
+				{
+					assert(!"kTAGFunctionExecNew could not read name when r0=0");
+				}
+			}
+			else if (r0 == 0xffffffff && r1 != 0)
+			{
+				if (ReadMemory(r1, name, 16))
+				{
+					error = false;
+					if (ARMCore::mDebuggingEnabled)
+					{
+						assert(!"TODO");
+					}
+				}
+				else if (ARMCore::mDebuggingEnabled)
+				{
+					assert(!"kTAGFunctionExecNew could not read name when r0=0");
+				}
+			}
+			else if (ARMCore::mDebuggingEnabled)
+			{
+				assert(!"kTAGFunctionExecNew unhandled entry state");
 			}
 			break;
 		}

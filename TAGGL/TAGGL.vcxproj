@@ -135,7 +135,14 @@
     <ClInclude Include="Inc\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\GameLib" />
     <None Include="..\ReadMe.txt" />
+    <None Include="Docs\Data-Live\1-Sys" />
+    <None Include="Docs\Data-Live\2-World" />
+    <None Include="Docs\Data-Live\3-Template" />
+    <None Include="Docs\Data-Live\4-Object" />
+    <None Include="Docs\Data-Live\5-Sprite" />
+    <None Include="Docs\Data-Live\Structs" />
     <None Include="Docs\Library\Events" />
     <None Include="Docs\Library\Functions" />
     <None Include="Docs\Library\Handlers" />

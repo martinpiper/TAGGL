@@ -103,3 +103,15 @@ Loaded Templates need TAG memory allocated. Do this after all the templates have
 
 * "Data\TestAnim2" needs: CallbackTAGFunction $811c
 	&1C - Del Template From World (Data is queued for IRQ use)
+
+
+
+* Does kTAGFunctionAddTemplate need mNeedToSendSystemInits and cause "04 (F) = system startup        (when new system is started)" and "06 (F) = instance startup      (when system is started, or world template added)"
+	To all objects, or only the one being added? Only the one being added...
+	However...
+	SendEventToWorldTemplate() cannot easily be used during ROEditor::CallbackTAGFunction
+	Hence why these events, for add/remove etc, must be queued
+
+
+
+* Similarly does kTAGFunctionDeleteTemplate need "07 (F) = instance closedown    (when system is close, or world template deleted)" sent to every object, or just the one being deleted?

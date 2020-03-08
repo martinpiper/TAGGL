@@ -25,6 +25,12 @@
     <Filter Include="Docs\Library">
       <UniqueIdentifier>{d3df1464-5f9f-44d1-96b6-53d7caa2c319}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Original sources">
+      <UniqueIdentifier>{d627bff2-babd-43a6-a7cc-56ac61b5bd46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Docs\Data-Live">
+      <UniqueIdentifier>{e16d09c6-a5e6-4246-b1b2-fe1bb62b2b2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -186,6 +192,27 @@
     </None>
     <None Include="Docs\Manual">
       <Filter>Docs</Filter>
+    </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\GameLib">
+      <Filter>Original sources</Filter>
+    </None>
+    <None Include="Docs\Data-Live\1-Sys">
+      <Filter>Docs\Data-Live</Filter>
+    </None>
+    <None Include="Docs\Data-Live\2-World">
+      <Filter>Docs\Data-Live</Filter>
+    </None>
+    <None Include="Docs\Data-Live\3-Template">
+      <Filter>Docs\Data-Live</Filter>
+    </None>
+    <None Include="Docs\Data-Live\4-Object">
+      <Filter>Docs\Data-Live</Filter>
+    </None>
+    <None Include="Docs\Data-Live\5-Sprite">
+      <Filter>Docs\Data-Live</Filter>
+    </None>
+    <None Include="Docs\Data-Live\Structs">
+      <Filter>Docs\Data-Live</Filter>
     </None>
   </ItemGroup>
 </Project>

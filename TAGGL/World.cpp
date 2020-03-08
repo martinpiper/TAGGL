@@ -34,7 +34,7 @@ void World::Render(void)
 	}
 }
 
-World::WorldTemplate::WorldTemplate() : mSysInitEventSent(false) , mInitEventSent(false) ,
+World::WorldTemplate::WorldTemplate() : mSystemWorld(0) , mSysInitEventSent(false) , mInitEventSent(false) , mDeleteTemplate(false) ,
 										mResourceIndex(0) , mTemplate(0) , mIPosition(0,0,0) , mIRotation(0,0,0) ,
 										mIScale(0,0,0) , mICollisionDistance(0)
 {

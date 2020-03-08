@@ -1,12 +1,3 @@
-* Does kTAGFunctionAddTemplate need mNeedToSendSystemInits and cause "04 (F) = system startup        (when new system is started)" and "06 (F) = instance startup      (when system is started, or world template added)"
-	To all objects, or only the one being added?
-
-
-
-* Similarly does kTAGFunctionDeleteTemplate need "07 (F) = instance closedown    (when system is close, or world template deleted)" sent to every object, or just the one being deleted?
-
-
-
 * // MPi: TODO: Implement properly
 	Several operations are not handled properly here
 

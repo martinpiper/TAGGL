@@ -6,6 +6,7 @@
 #include <vector>
 #include "TAGGL/Inc/Types.h"
 #include "TAGGL/Inc/BaseItem.h"
+#include "TAGGL/Inc/System.h"
 
 namespace TAGGL
 {
@@ -24,9 +25,12 @@ public:
 	{
 		WorldTemplate();
 
+		System::SystemWorld *mSystemWorld;
+
 		std::vector<unsigned int> mARMPrivateWords;
 		bool mSysInitEventSent;
 		bool mInitEventSent;
+		bool mDeleteTemplate;
 
 		// Original Holograph data
 		int mResourceIndex;

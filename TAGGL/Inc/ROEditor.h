@@ -90,6 +90,7 @@ protected:
 	unsigned int mARMSinTableAddress;
 
 	bool mNeedToSendSystemInits;
+	bool mCheckDeleteTemplate;
 };
 
 };

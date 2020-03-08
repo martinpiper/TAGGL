@@ -88,7 +88,7 @@ static int sLoadedIteration = 0;
 // MPi: TODO: Produce a proper heap that can free blocks. At the moment this just increments.
 static unsigned int sLoadedHeap = 0x10000;
 
-ROEditor::ROEditor() : mCurrentSystem(0) , mNeedToSendSystemInits(true)
+ROEditor::ROEditor() : mCurrentSystem(0) , mNeedToSendSystemInits(true) , mCheckDeleteTemplate(false)
 {
 	// Setup the "Global Data Ptrs" described in "Functions" document
 	unsigned int address = ARMHeapAlloc(1*1024);
@@ -802,6 +802,10 @@ bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World 
 
 	if (temp->mTemplate)
 	{
+		if (!temp->mSystemWorld)
+		{
+			temp->mSystemWorld = systemWorld;
+		}
 		bool executed = false;
 		size_t i;
 		for( i = 0 ; i < temp->mTemplate->mHandlers.size() ; i++)
@@ -941,13 +945,44 @@ bool ROEditor::ResourceLess::operator()(const std::string &lhs, const std::strin
 
 void ROEditor::PollEvents(void)
 {
-	if (!mNeedToSendSystemInits)
+	if (mNeedToSendSystemInits)
 	{
-		return;
+		mNeedToSendSystemInits = false;
+
+		SendEventToRunningObjects(4);
+		SendEventToRunningObjects(6);
 	}
 
-	mNeedToSendSystemInits = false;
+	if (mCheckDeleteTemplate)
+	{
+		mCheckDeleteTemplate = false;
+		if (mCurrentSystem)
+		{
+			std::list<System::SystemWorld>::iterator st = mCurrentSystem->mWorlds.begin();
+			while (st != mCurrentSystem->mWorlds.end())
+			{
+				System::SystemWorld *systemWorld = &(*st);
+				if (!systemWorld->mNoHandlerEvents)
+				{
+					World *world = systemWorld->mWorld;
+					st++;
+					if (world)
+					{
+						std::list<World::WorldTemplate*>::iterator st;
+						st = world->mTemplates.begin();
+						while (st != world->mTemplates.end())
+						{
+							World::WorldTemplate *temp = *st++;
 
-	SendEventToRunningObjects(4);
-	SendEventToRunningObjects(6);
+							if (temp->mDeleteTemplate)
+							{
+								world->mTemplates.remove(temp);
+								SendEventToWorldTemplate(temp->mSystemWorld, world, temp, 7);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

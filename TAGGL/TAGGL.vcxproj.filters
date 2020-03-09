@@ -214,5 +214,8 @@
     <None Include="Docs\Data-Live\Structs">
       <Filter>Docs\Data-Live</Filter>
     </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\Library">
+      <Filter>Original sources</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\GameLib" />
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\Library" />
     <None Include="..\ReadMe.txt" />
     <None Include="Docs\Data-Live\1-Sys" />
     <None Include="Docs\Data-Live\2-World" />

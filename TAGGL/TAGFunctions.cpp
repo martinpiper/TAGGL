@@ -190,9 +190,6 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 
 		case kTAGFunctionDeleteTemplate:
 		{
-			// SendEventToWorldTemplate() cannot easily be used during ROEditor::CallbackTAGFunction
-			mCheckDeleteTemplate = true;
-
 			unsigned int op = GetRegister(0);
 			if (op == 1)
 			{
@@ -217,8 +214,19 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 					{
 						World *world = (World*)worldItem;
 						World::WorldTemplate *worldTemplate = (World::WorldTemplate*)item;
-						// Flat it only. SendEventToWorldTemplate() cannot easily be used during ROEditor::CallbackTAGFunction
-						worldTemplate->mDeleteTemplate = true;
+
+						int registers[16];
+						for (int i = 0; i < 16; i++)
+						{
+							registers[i] = GetRegister(i);
+						}
+						SendEventToWorldTemplate(worldTemplate->mSystemWorld, world, worldTemplate, 7);
+						world->mTemplates.remove(worldTemplate);
+						for (int i = 0; i < 16; i++)
+						{
+							SetRegister(i , registers[i]);
+						}
+
 						error = false;
 					}
 					else

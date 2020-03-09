@@ -23,8 +23,8 @@ public:
 	void SetPC(const unsigned int addr);
 	void SetRegister(const int reg, const unsigned int value,const bool PSR = true);
 	unsigned int GetRegister(const int reg);
-
 	bool Execute(const int cycles = -1);
+	void InitStack();
 
 	virtual bool CallbackTAGFunction(const unsigned int address);
 

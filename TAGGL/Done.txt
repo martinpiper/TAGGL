@@ -115,3 +115,10 @@ Loaded Templates need TAG memory allocated. Do this after all the templates have
 
 
 * Similarly does kTAGFunctionDeleteTemplate need "07 (F) = instance closedown    (when system is close, or world template deleted)" sent to every object, or just the one being deleted?
+
+
+
+* Removed mCheckDeleteTemplate in kTAGFunctionDeleteTemplate and instead made the ARMCore capable of being stacked and handling function calls.
+	This means SendEventToWorldTemplate() can now be used and it returns correctly to the calling code.
+	This work was in preparation for adding kTAGFunctionExecNew which really needed this ability.
+

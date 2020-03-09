@@ -1,3 +1,10 @@
+* At the moment "gGame.InitStack();" is needed to reset the stack each frame, some handlers/operations do not seem to be popping all their stacked data
+	SendEventToWorldTemplate() can warn if the stack is not being popped correctly to aid in debugging why
+		It is probably linked to some exceptions being thrown due to "screen memory" access, or SWIs
+
+
+
+
 * // MPi: TODO: Implement properly
 	Several operations are not handled properly here
 
@@ -23,6 +30,8 @@
 		Template $142b0 Running Event Frame:4 for 'Control         ' handler 0='CtrlApp         '
 		r0	0xffffffff
 		r1	0x00014930
+		Library: ea_exec_ind->
+		GameLib: ea_execsystem
 	Adding kTAGFunctionExecNew
 		Seeing: +		name	0x00cfebe0 "BHPdata:Titles"	char[0x00000011]
 

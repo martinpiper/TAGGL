@@ -41,6 +41,13 @@ ARMCore::ARMCore()
 
 	sTheARM.mem->set_block(0x30000000, 0, 0x10000);
 	sTheARM.cpu_val = SA1100;
+
+	InitStack();
+}
+
+void TAGGL::ARMCore::InitStack()
+{
+	sTheARM.write_gpr(SPIND, 0x30000000 + 0x10000 - 4);
 }
 
 ARMCore::~ARMCore()
@@ -62,13 +69,12 @@ static const unsigned int kHandlerRet = 0x100;
 void ARMCore::SetPC(const unsigned int addr)
 {
 	int i;
-	for (i=0;i<15;i++)
+	for (i=0;i<SPIND;i++)
 	{
 		// Setup all the registers to point to unused memory so unimplemented handler code will be more likely generate an exception
 		sTheARM.write_gpr(i,0x20000000);
 	}
 
-	sTheARM.write_gpr(SPIND, 0x30000000 + 0x10000 - 4);
 	sTheARM.write_gpr(LRIND, kHandlerRet);	// When the PC reaches this it indicates a return from a handler
 
 	sTheARM.write_gpr(PC_AHEAD_IND, addr);
@@ -112,6 +118,18 @@ bool ARMCore::Execute(const int cycles)
 			arm_disassemble(inst, sTheARM.get_pc(), buffer);
 			sprintf(buffer2,"%08x : %08x %s\n",addr & 0x3ffffffc, inst, buffer);
 			OutputDebugStringA(buffer2);
+			buffer[0] = 0;
+			for (int i = 0; i < 15; i++)
+			{
+				sprintf(buffer2, "%02d: %08x ", i , sTheARM.read_gpr(i));
+				strcat(buffer, buffer2);
+				if (i == 7)
+				{
+					strcat(buffer, "\n");
+				}
+			}
+			strcat(buffer, "\n");
+			OutputDebugStringA(buffer);
 		}
 
 		sTheARM.execute_user(inst, sTheARM.get_pc());

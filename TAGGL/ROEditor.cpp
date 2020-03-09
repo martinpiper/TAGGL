@@ -88,7 +88,7 @@ static int sLoadedIteration = 0;
 // MPi: TODO: Produce a proper heap that can free blocks. At the moment this just increments.
 static unsigned int sLoadedHeap = 0x10000;
 
-ROEditor::ROEditor() : mCurrentSystem(0) , mNeedToSendSystemInits(true) , mCheckDeleteTemplate(false)
+ROEditor::ROEditor() : mCurrentSystem(0) , mNeedToSendSystemInits(true)
 {
 	// Setup the "Global Data Ptrs" described in "Functions" document
 	unsigned int address = ARMHeapAlloc(1*1024);
@@ -951,38 +951,5 @@ void ROEditor::PollEvents(void)
 
 		SendEventToRunningObjects(4);
 		SendEventToRunningObjects(6);
-	}
-
-	if (mCheckDeleteTemplate)
-	{
-		mCheckDeleteTemplate = false;
-		if (mCurrentSystem)
-		{
-			std::list<System::SystemWorld>::iterator st = mCurrentSystem->mWorlds.begin();
-			while (st != mCurrentSystem->mWorlds.end())
-			{
-				System::SystemWorld *systemWorld = &(*st);
-				if (!systemWorld->mNoHandlerEvents)
-				{
-					World *world = systemWorld->mWorld;
-					st++;
-					if (world)
-					{
-						std::list<World::WorldTemplate*>::iterator st;
-						st = world->mTemplates.begin();
-						while (st != world->mTemplates.end())
-						{
-							World::WorldTemplate *temp = *st++;
-
-							if (temp->mDeleteTemplate)
-							{
-								world->mTemplates.remove(temp);
-								SendEventToWorldTemplate(temp->mSystemWorld, world, temp, 7);
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 }

@@ -119,7 +119,7 @@ bool ARMCore::Execute(const int cycles)
 			sprintf(buffer2,"%08x : %08x %s\n",addr & 0x3ffffffc, inst, buffer);
 			OutputDebugStringA(buffer2);
 			buffer[0] = 0;
-			for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 16; i++)
 			{
 				sprintf(buffer2, "%02d: %08x ", i , sTheARM.read_gpr(i));
 				strcat(buffer, buffer2);

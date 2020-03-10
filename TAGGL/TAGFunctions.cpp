@@ -215,17 +215,8 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 						World *world = (World*)worldItem;
 						World::WorldTemplate *worldTemplate = (World::WorldTemplate*)item;
 
-						int registers[16];
-						for (int i = 0; i < 16; i++)
-						{
-							registers[i] = GetRegister(i);
-						}
-						SendEventToWorldTemplate(worldTemplate->mSystemWorld, world, worldTemplate, 7);
+						StackedSendEventToWorldTemplate(worldTemplate->mSystemWorld, world, worldTemplate, 7);
 						world->mTemplates.remove(worldTemplate);
-						for (int i = 0; i < 16; i++)
-						{
-							SetRegister(i , registers[i]);
-						}
 
 						error = false;
 					}

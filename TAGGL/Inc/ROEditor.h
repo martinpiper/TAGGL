@@ -35,6 +35,7 @@ public:
 
 	bool SendEventToAllHandlers(const unsigned int event);
 
+	bool StackedSendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
 	bool SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
 
 	bool SendEventToRunningObjects(const unsigned int event, const bool frame = true);

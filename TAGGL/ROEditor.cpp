@@ -781,6 +781,21 @@ bool ROEditor::SendEventToAllHandlers(const unsigned int event)
 	return true;
 }
 
+bool ROEditor::StackedSendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame)
+{
+	int registers[16];
+	for (int i = 0; i < 16; i++)
+	{
+		registers[i] = GetRegister(i);
+	}
+	bool ret = SendEventToWorldTemplate(systemWorld, world, temp, 7, frame);
+	for (int i = 0; i < 16; i++)
+	{
+		SetRegister(i, registers[i]);
+	}
+	return ret;
+}
+
 bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame)
 {
 	if ((event == 4) && temp->mSysInitEventSent)

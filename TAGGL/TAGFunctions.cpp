@@ -54,16 +54,16 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 			{
 				unsigned int resourceIndex = GetRegister(0) & 0xf;
 				bool reportError = (GetRegister(0) & 0x80000000)?true:false;
-				if (resourceIndex < kMaxResourceTypes)
+				if (resourceIndex < ResourceItem::kMaxResourceTypes)
 				{
 					ResourceIndex::iterator found = mResources[resourceIndex].find(std::string(name));
 					if (found != mResources[resourceIndex].end())
 					{
-						ResourceItem &item = found->second;
-						if (item.mItem && item.mItem->mARMAddress)
+						ResourceItem *item = found->second;
+						if (item->mItem && item->mItem->mARMAddress)
 						{
 							error = false;
-							SetRegister(0,item.mItem->mARMAddress);
+							SetRegister(0,item->mItem->mARMAddress);
 						}
 					}
 					if (error && reportError && ARMCore::mDebuggingEnabled)
@@ -108,7 +108,7 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 				BaseItem *toItem = 0;
 				toItem = mARMAddressToBaseItem[GetRegister(2)];
 
-				if (fromItem && (fromItem->mOriginalResourceTypeIndex == ROEditor::kWorld) && toItem && (toItem->mOriginalResourceTypeIndex == ROEditor::kWorld))
+				if (fromItem && (fromItem->mOriginalResourceTypeIndex == ResourceItem::kWorld) && toItem && (toItem->mOriginalResourceTypeIndex == ResourceItem::kWorld))
 				{
 					World *from = (World *) fromItem;
 					World *to = (World *) toItem;
@@ -146,7 +146,7 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 				}
 				else
 				{
-					if ((worldItem->mOriginalResourceTypeIndex == kWorld) && (item->mOriginalResourceTypeIndex == kTemplate))
+					if ((worldItem->mOriginalResourceTypeIndex == ResourceItem::kWorld) && (item->mOriginalResourceTypeIndex == ResourceItem::kTemplate))
 					{
 						World *world = (World*) worldItem;
 
@@ -210,12 +210,12 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 				}
 				else
 				{
-					if ((worldItem->mOriginalResourceTypeIndex == kWorld) && (item->mOriginalResourceTypeIndex == kWorldTemplate))
+					if ((worldItem->mOriginalResourceTypeIndex == ResourceItem::kWorld) && (item->mOriginalResourceTypeIndex == ResourceItem::kWorldTemplate))
 					{
 						World *world = (World*)worldItem;
 						World::WorldTemplate *worldTemplate = (World::WorldTemplate*)item;
 
-						StackedSendEventToWorldTemplate(worldTemplate->mSystemWorld, world, worldTemplate, 7);
+						SendEventToWorldTemplate(worldTemplate->mSystemWorld, world, worldTemplate, 7);
 						world->mTemplates.remove(worldTemplate);
 
 						error = false;
@@ -255,13 +255,43 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 			}
 			else if (r0 == 0xffffffff && r1 != 0)
 			{
+				// : -1 : > 0 : load app data(R1 = filename) (R2 = crc word) : R0 = app handle : N:
 				if (ReadMemory(r1, name, 16))
 				{
-					error = false;
+					std::string riscosPath = name;
+					size_t pos;
+					if ((pos = riscosPath.find_last_of(':')) != std::string::npos)
+					{
+						riscosPath = riscosPath.substr(pos + 1);
+					}
+					riscosPath = mRootDirectory + riscosPath;
+
 					if (ARMCore::mDebuggingEnabled)
 					{
-						assert(!"TODO");
+						char buffer[1024];
+						sprintf(buffer, "Loading app data '%s'\n", riscosPath.c_str());
+						OutputDebugStringA(buffer);
 					}
+
+					DynamicMessageHelper file;
+					bool ret = file.Read(riscosPath.c_str(), true);
+					assert(ret && "No file loaded");
+					ReadOutput(file);
+
+					unsigned int loadedIteration = GetLoadedIteration();
+
+					if (ARMCore::mDebuggingEnabled)
+					{
+						char buffer[1024];
+						sprintf(buffer, "Loaded app data '%s' app handle $%08x\n", riscosPath.c_str() , loadedIteration);
+						OutputDebugStringA(buffer);
+					}
+
+					SendEventToAllHandlers(0, loadedIteration);
+
+					SetRegister(0, loadedIteration);
+
+					error = false;
 				}
 				else if (ARMCore::mDebuggingEnabled)
 				{
@@ -344,6 +374,22 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 			error = false;
 			break;
 		}
+
+		case kTAGFunctionReportError:
+		{
+			char message[256];
+			message[255] = '\0';
+			unsigned int r0 = GetRegister(0);
+			if (ReadMemory(r0+4, message, 255))
+			{
+				char buffer[256];
+				sprintf(buffer, "kTAGFunctionReportError $%08x %s\n", r0 , message);
+				OutputDebugStringA(buffer);
+			}
+			assert(!"kTAGFunctionReportError");
+			break;
+		}
+
 
 	}
 

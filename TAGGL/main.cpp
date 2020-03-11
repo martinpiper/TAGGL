@@ -77,7 +77,7 @@ void display(void)
 	{
 		gGame.mCurrentSystem->Render();
 	}
-	else if (!gGame.mResources[ROEditor::kWorld].empty())
+	else if (!gGame.mResources[ResourceItem::kWorld].empty())
 	{
 		glLoadIdentity();
 //		glTranslatef(0.0f , -100.0f, -750.0f);
@@ -87,10 +87,10 @@ void display(void)
 		glTranslatef(0.0f + gOverridePosX, -5.0f + gOverridePosY, 0.0f + gOverridePosZ);
 
 		ROEditor::ResourceIndex::iterator st;
-		st = gGame.mResources[ROEditor::kWorld].begin();
-		while (st != gGame.mResources[ROEditor::kWorld].end() )
+		st = gGame.mResources[ResourceItem::kWorld].begin();
+		while (st != gGame.mResources[ResourceItem::kWorld].end() )
 		{
-			World *world = (World*) st->second.mItem;
+			World *world = (World*) st->second->mItem;
 			st++;
 			if (world)
 			{
@@ -197,6 +197,13 @@ void init(void)
 		appPath.erase(appPath.length()-1);
 	}
 
+	std::string rootDirectory;
+	if ((pos = appPath.find_last_of('\\')) != std::string::npos)
+	{
+		rootDirectory = appPath.substr(0, pos+1);
+		gGame.SetRootDirectory(rootDirectory);
+	}
+
 	// First try to read the file as Holograph output data
 	bool ret = file.Read(appPath.c_str(),true);
 	assert(ret && "No file loaded");
@@ -208,23 +215,23 @@ void init(void)
 
 	// If no startup system was found then try to fudge one instead
 #if 1
-	if (!gGame.mCurrentSystem && !gGame.mResources[ROEditor::kWorld].empty())
+	if (!gGame.mCurrentSystem && !gGame.mResources[ResourceItem::kWorld].empty())
 	{
 		gGame.mCurrentSystem = new System;
-		ROEditor::ResourceIndex::iterator st = gGame.mResources[ROEditor::kWorld].begin();
-		while (st != gGame.mResources[ROEditor::kWorld].end())
+		ROEditor::ResourceIndex::iterator st = gGame.mResources[ResourceItem::kWorld].begin();
+		while (st != gGame.mResources[ResourceItem::kWorld].end())
 		{
 			System::SystemWorld systemWorld;
 			systemWorld.mFilledRender = true;
-			systemWorld.mWorld = (World*)st->second.mItem;
+			systemWorld.mWorld = (World*)st->second->mItem;
 			gGame.mCurrentSystem->mWorlds.push_back(systemWorld);
 			st++;
 		}
 	}
 #endif
-	if (!gGame.mCurrentSystem && !gGame.mResources[ROEditor::kSystem].empty())
+	if (!gGame.mCurrentSystem && !gGame.mResources[ResourceItem::kSystem].empty())
 	{
-		gGame.mCurrentSystem = (System *) gGame.mResources[ROEditor::kSystem].begin()->second.mItem;
+		gGame.mCurrentSystem = (System *) gGame.mResources[ResourceItem::kSystem].begin()->second->mItem;
 	}
 #else
 	// Force what files to load from BHP to try to get this running. The BHP loader code seems to want to merge these three system files and run the track, so this is what we shall attempt to do.

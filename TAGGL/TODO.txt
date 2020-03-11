@@ -34,6 +34,12 @@
 		GameLib: ea_execsystem
 	Adding kTAGFunctionExecNew
 		Seeing: +		name	0x00cfebe0 "BHPdata:Titles"	char[0x00000011]
+	Implemented, now seeing: $8200 which indicates it is reporting an error
+		kTAGFunctionReportError $00014b28 Error, No Track Files Are Installed!
+		This is a really good sign, it means it's not able to find any track files
+	* Need to implement: 00014a7c : ef02000c swi 2000c
+		http://www.wra1th.plus.com/lua/diy/Riscos.html
+		swi   0x2000c       @  XOS_GBPB
 
 
 

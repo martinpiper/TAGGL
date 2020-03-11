@@ -40,5 +40,5 @@ World::WorldTemplate::WorldTemplate() : mSystemWorld(0) , mSysInitEventSent(fals
 {
 	mDataWords[0] = 0;
 	mDataWords[1] = 0;
-	mOriginalResourceTypeIndex = ROEditor::kWorldTemplate;
+	mOriginalResourceTypeIndex = ResourceItem::kWorldTemplate;
 }

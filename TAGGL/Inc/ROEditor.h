@@ -19,27 +19,8 @@ extern unsigned int gRISCOSToRGB[256];
 class Object;
 class BaseItem;
 
-
-class ROEditor : public ARMCore
+struct ResourceItem
 {
-public:
-	ROEditor();
-	virtual ~ROEditor();
-
-	bool ReadOutput(RNReplicaNet::MessageHelper &data);
-	Object *ReadOutputObject(RNReplicaNet::MessageHelper &data);
-
-	unsigned int ARMHeapAlloc(unsigned int size);
-
-	void PollEvents(void);
-
-	bool SendEventToAllHandlers(const unsigned int event);
-
-	bool StackedSendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
-	bool SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
-
-	bool SendEventToRunningObjects(const unsigned int event, const bool frame = true);
-
 	enum
 	{
 		kSystem = 0,
@@ -55,30 +36,54 @@ public:
 		kWorldTemplate
 	};
 
-	struct ResourceItem
-	{
-		ResourceItem() : mType(kMaxResourceTypes) , mFileOffset(0) , mItem(0) , mLoadedByIteration(0) , mOriginalIndex(0) , mChunkSize(0) {}
-		int mType;
-		unsigned int mFileOffset;
-		BaseItem *mItem;
-		int mLoadedByIteration;
-		int mOriginalIndex;
-		int mChunkSize;
-	};
+	ResourceItem() : mType(kMaxResourceTypes), mFileOffset(0), mItem(0), mLoadedByIteration(0), mOriginalIndex(0), mChunkSize(0) {}
+	int mType;
+	unsigned int mFileOffset;
+	BaseItem *mItem;
+	int mLoadedByIteration;
+	int mOriginalIndex;
+	int mChunkSize;
+};
+
+class ROEditor : public ARMCore
+{
+public:
+	ROEditor();
+	virtual ~ROEditor();
+
+	bool ReadOutput(RNReplicaNet::MessageHelper &data);
+	Object *ReadOutputObject(RNReplicaNet::MessageHelper &data);
+
+	unsigned int ARMHeapAlloc(unsigned int size);
+
+	void PollEvents(void);
+
+	bool SendEventToAllHandlers(const unsigned int event , const unsigned int applicationHandle = 0);
+
+	bool SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame = true);
+
+	bool SendEventToRunningObjects(const unsigned int event, const bool frame = true);
 
 	struct ResourceLess
 	{
 		bool operator()(const std::string &lhs, const std::string &rhs) const;
 	};
 
-	typedef std::map<std::string,ResourceItem,ResourceLess> ResourceIndex;
-	ResourceIndex mResources[kMaxResourceTypes];
+	typedef std::map<std::string,ResourceItem*,ResourceLess> ResourceIndex;
+	ResourceIndex mResources[ResourceItem::kMaxResourceTypes];
 
 	std::map<unsigned int,BaseItem *> mARMAddressToBaseItem;
 
 	std::vector<Object *> mObjectsLoaded;
 
 	System *mCurrentSystem;
+
+	void SetRootDirectory(const std::string &path)
+	{
+		mRootDirectory = path;
+	}
+
+	unsigned int GetLoadedIteration(void) const;
 
 protected:
 	virtual bool CallbackTAGFunction(const unsigned int address);
@@ -91,6 +96,8 @@ protected:
 	unsigned int mARMSinTableAddress;
 
 	bool mNeedToSendSystemInits;
+
+	std::string mRootDirectory;
 };
 
 };

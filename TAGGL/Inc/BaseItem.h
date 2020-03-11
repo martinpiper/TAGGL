@@ -7,10 +7,12 @@
 namespace TAGGL
 {
 
+struct ResourceItem;
+
 class BaseItem
 {
 public:
-	BaseItem() : mARMAddress(0) , mARMCompiledAddress(0) , mARMLiveAddress(0) , mOriginalResourceTypeIndex(-1) {}
+	BaseItem() : mARMAddress(0) , mARMCompiledAddress(0) , mARMLiveAddress(0) , mOriginalResourceTypeIndex(-1) , mResource(0) {}
 	virtual ~BaseItem() {}
 
 	/// The ARM Address of the "Resource Header".
@@ -25,6 +27,7 @@ public:
 
 	int mOriginalResourceTypeIndex;
 	std::string mOriginalResourceName;
+	ResourceItem *mResource;
 };
 
 }

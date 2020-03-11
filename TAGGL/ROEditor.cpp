@@ -83,7 +83,12 @@ unsigned int TAGGL::gRISCOSToRGB[256] =
 	0xccccccff, 0xddddddff, 0xeeeeeeff, 0xffffffff
 };
 
-static int sLoadedIteration = 0;
+static unsigned int sLoadedIteration = 0;
+
+unsigned int ROEditor::GetLoadedIteration(void) const
+{
+	return sLoadedIteration;
+}
 
 // MPi: TODO: Produce a proper heap that can free blocks. At the moment this just increments.
 static unsigned int sLoadedHeap = 0x10000;
@@ -117,8 +122,9 @@ ROEditor::~ROEditor()
 
 bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 {
+	unsigned int previousIteration = sLoadedIteration;
 	mNeedToSendSystemInits = true;
-	int thisLoadedIteration = sLoadedIteration++;
+	unsigned int thisLoadedIteration = ++sLoadedIteration;
 
 	if (ARMCore::mDebuggingEnabled)
 	{
@@ -146,10 +152,10 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 	unsigned int totalResourceSize;
 	data >> totalResourceSize;
 
+	// MPi: TODO: If parsing the plot data and vanishing point then only really do this when previousIteration==0
 	data.SkipData(16);	// Plot data buffer sizes
-
 	int vanishingPoint;
-	data >> vanishingPoint;
+	data >> vanishingPoint;	// MPi: TODO: Support this?
 
 	data.SkipData(12);	// RFU and compressed block sizes;
 
@@ -157,17 +163,17 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 	startupSystem[16] = '\0';
 	data.GetData(startupSystem,16);
 
-	int numResourceItems[kMaxResourceTypes];
+	int numResourceItems[ResourceItem::kMaxResourceTypes];
 	int i;
-	for (i = 0; i < kMaxResourceTypes ; i++)
+	for (i = 0; i < ResourceItem::kMaxResourceTypes ; i++)
 	{
 		data >> numResourceItems[i];
 	}
 
 	std::vector<unsigned int> textureHandles;
-	if (numResourceItems[kSprite] > 0)
+	if (numResourceItems[ResourceItem::kSprite] > 0)
 	{
-		textureHandles.resize(numResourceItems[kSprite]);
+		textureHandles.resize(numResourceItems[ResourceItem::kSprite]);
 		glGenTextures(textureHandles.size(), &textureHandles[0]);
 	}
 
@@ -179,18 +185,18 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 
 	int numResourcesParsed = 0;
 
-	for (i = 0; i < kMaxResourceTypes ; i++)
+	for (i = 0; i < ResourceItem::kMaxResourceTypes ; i++)
 	{
 		int j;
 		for (j = 0; j < numResourceItems[i] ; j++)
 		{
-			ResourceItem item;
+			ResourceItem *item = new ResourceItem();
 
-			item.mType = i;
-			item.mOriginalIndex = j;
-			item.mLoadedByIteration = thisLoadedIteration;
+			item->mType = i;
+			item->mOriginalIndex = j;
+			item->mLoadedByIteration = thisLoadedIteration;
 
-			data >> item.mFileOffset;
+			data >> item->mFileOffset;
 
 			data.SkipData(12);
 
@@ -202,11 +208,11 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 				next.SkipData(16);
 				unsigned int nextOffset;
 				next >> nextOffset;
-				item.mChunkSize = (int) nextOffset - item.mFileOffset;
+				item->mChunkSize = (int) nextOffset - item->mFileOffset;
 			}
 			else
 			{
-				item.mChunkSize = totalResourceSize - item.mFileOffset;
+				item->mChunkSize = totalResourceSize - item->mFileOffset;
 			}
 
 			char name[17];
@@ -214,18 +220,18 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 			data.GetData(name,16);
 
 			MessageHelper part;
-			part.SetBuffer( ((char*)data.GetBuffer()) + item.mFileOffset + dataStartOffset );
-			part.SetGuardSize(item.mChunkSize);
+			part.SetBuffer( ((char*)data.GetBuffer()) + item->mFileOffset + dataStartOffset );
+			part.SetGuardSize(item->mChunkSize);
 
 			// If either of these are set then they get added to the ARM resource header
 			unsigned int compiledData = 0;
 			unsigned int liveData = 0;
 			switch(i)
 			{
-				case kSystem:
+				case ResourceItem::kSystem:
 				{
 					System *system = new System;
-					item.mItem = system;
+					item->mItem = system;
 					loadedSystems.push_back(system);
 
 					if (_stricmp(startupSystem,name) == 0)
@@ -262,7 +268,7 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					}
 					while (index != -1)
 					{
-						assert(index < numResourceItems[kWorld]);
+						assert(index < numResourceItems[ResourceItem::kWorld]);
 						System::SystemWorld world;
 						world.mResourceIndex = index;
 						world.mARMAddress = ARMHeapAlloc(32);
@@ -297,14 +303,14 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					break;
 				}
 
-				case kWorld:
+				case ResourceItem::kWorld:
 				{
 					World *world = new World;
-					item.mItem = world;
+					item->mItem = world;
 					loadedWorlds.push_back(world);
 
-					compiledData = ARMHeapAlloc(item.mChunkSize);
-					WriteMemory(compiledData,part.GetCurrentPosition(), item.mChunkSize);
+					compiledData = ARMHeapAlloc(item->mChunkSize);
+					WriteMemory(compiledData,part.GetCurrentPosition(), item->mChunkSize);
 
 					// MPi: TODO: The live world needs a proper link list
 					liveData = ARMHeapAlloc(2 * 4);
@@ -317,7 +323,7 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					part >> index;
 					while (index != -1)
 					{
-						assert(index < numResourceItems[kTemplate]);
+						assert(index < numResourceItems[ResourceItem::kTemplate]);
 						World::WorldTemplate *temp = new World::WorldTemplate();
 						temp->mResourceIndex = index;
 
@@ -344,10 +350,10 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					break;
 				}
 
-				case kTemplate:
+				case ResourceItem::kTemplate:
 				{
 					Template *temp = new Template;
-					item.mItem = temp;
+					item->mItem = temp;
 					loadedTemplates.push_back(temp);
 
 					int num;
@@ -363,7 +369,7 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					{
 						Template::TemplateObject obj;
 						part >> obj.mResourceIndex;
-						assert(obj.mResourceIndex < numResourceItems[kObject]);
+						assert(obj.mResourceIndex < numResourceItems[ResourceItem::kObject]);
 						part >> obj.mIDistance;
 
 						temp->mObjects.push_back(obj);
@@ -375,7 +381,7 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					{
 						Template::TemplateHandler hand;
 						part >> hand.mResourceIndex;
-						assert(hand.mResourceIndex < numResourceItems[kHandler]);
+						assert(hand.mResourceIndex < numResourceItems[ResourceItem::kHandler]);
 
 						// MPi: TODO: Implement proper TAG ARM internal data structures
 						hand.mARMAddress = ARMHeapAlloc(4*4);
@@ -395,24 +401,24 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					break;
 				}
 
-				case kObject:
+				case ResourceItem::kObject:
 				{
 					Object *object = ReadOutputObject(part);
-					item.mItem = object;
+					item->mItem = object;
 					loadedObjects.push_back(object);
 
 					mObjectsLoaded.push_back(object);
 					break;
 				}
 
-				case kSprite:
+				case ResourceItem::kSprite:
 				{
 					int colourDepth;
 
 					DataChunk *chunk = new DataChunk();
-					item.mItem = chunk;
-					compiledData = ARMHeapAlloc(item.mChunkSize);
-					WriteMemory(compiledData,part.GetBuffer(), item.mChunkSize);
+					item->mItem = chunk;
+					compiledData = ARMHeapAlloc(item->mChunkSize);
+					WriteMemory(compiledData,part.GetBuffer(), item->mChunkSize);
 
 					part >> colourDepth;
 					assert((colourDepth == 3) && "Unsupported colour depth");
@@ -428,13 +434,13 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					part >> RISCOSScreenmode;
 
 					// Data
-					unsigned char *pixels = ((unsigned char*)data.GetBuffer()) + item.mFileOffset + dataStartOffset + offsetData;
+					unsigned char *pixels = ((unsigned char*)data.GetBuffer()) + item->mFileOffset + dataStartOffset + offsetData;
 					unsigned int *pixelData = (unsigned int*)calloc(width * height,sizeof(unsigned int));
 
 					unsigned char *mask = 0;
 					if (offsetMask)
 					{
-						mask = ((unsigned char*)data.GetBuffer()) + item.mFileOffset + dataStartOffset + offsetMask;
+						mask = ((unsigned char*)data.GetBuffer()) + item->mFileOffset + dataStartOffset + offsetMask;
 					}
 
 					int x , y;
@@ -461,19 +467,18 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 					break;
 				}
 
-				case kHandler:
-				case kMiscData:
+				case ResourceItem::kHandler:
+				case ResourceItem::kMiscData:
 				{
 					DataChunk *chunk = new DataChunk();
-					item.mItem = chunk;
+					item->mItem = chunk;
 					loadedHandlers.push_back(chunk);
 
-					chunk->Allocate(item.mChunkSize);
-					memcpy(chunk->mData, part.GetBuffer(), item.mChunkSize);
+					chunk->Allocate(item->mChunkSize);
+					memcpy(chunk->mData, part.GetBuffer(), item->mChunkSize);
 
-					compiledData = ARMHeapAlloc(item.mChunkSize);
-					WriteMemory(compiledData,chunk->mData, item.mChunkSize);
-
+					compiledData = ARMHeapAlloc(item->mChunkSize);
+					WriteMemory(compiledData,chunk->mData, item->mChunkSize);
 
 					break;
 				}
@@ -481,57 +486,59 @@ bool ROEditor::ReadOutput(RNReplicaNet::MessageHelper &data)
 				default:
 				{
 					DataChunk *chunk = new DataChunk();
-					item.mItem = chunk;
+					item->mItem = chunk;
 
-					chunk->Allocate(item.mChunkSize);
-					memcpy(chunk->mData, part.GetBuffer(), item.mChunkSize);
+					chunk->Allocate(item->mChunkSize);
+					memcpy(chunk->mData, part.GetBuffer(), item->mChunkSize);
 					break;
 				}
 			}
 
-			if (item.mItem)
+			if (item->mItem)
 			{
-				item.mItem->mOriginalResourceTypeIndex = i;
-				item.mItem->mOriginalResourceName = name;
+				item->mItem->mOriginalResourceTypeIndex = i;
+				item->mItem->mOriginalResourceName = name;
+				item->mItem->mResource = item;
 
-				CreateARMResource(item.mItem,name);
+				CreateARMResource(item->mItem,name);
 
 				if (compiledData)
 				{
-					WriteMemory(item.mItem->mARMAddress,&compiledData, 4);
-					item.mItem->mARMCompiledAddress = compiledData;
-					mARMAddressToBaseItem.insert(std::pair<unsigned int,BaseItem *>(compiledData,item.mItem));
+					WriteMemory(item->mItem->mARMAddress,&compiledData, 4);
+					item->mItem->mARMCompiledAddress = compiledData;
+					mARMAddressToBaseItem.insert(std::pair<unsigned int,BaseItem *>(compiledData,item->mItem));
 				}
 
 				if (liveData)
 				{
-					WriteMemory(item.mItem->mARMAddress + 4,&liveData, 4);
-					item.mItem->mARMLiveAddress = liveData;
-					mARMAddressToBaseItem.insert(std::pair<unsigned int,BaseItem *>(liveData,item.mItem));
+					WriteMemory(item->mItem->mARMAddress + 4,&liveData, 4);
+					item->mItem->mARMLiveAddress = liveData;
+					mARMAddressToBaseItem.insert(std::pair<unsigned int,BaseItem *>(liveData,item->mItem));
 				}
 
 				if (ARMCore::mDebuggingEnabled)
 				{
 					char buffer[256];
-					sprintf(buffer,"Loaded resource '%s':%d resource $%x compiled $%x live $%x\n",name,i,item.mItem->mARMAddress,item.mItem->mARMCompiledAddress,item.mItem->mARMLiveAddress);
+					sprintf(buffer,"Loaded resource '%s':%d resource $%x compiled $%x live $%x\n",name,i,item->mItem->mARMAddress,item->mItem->mARMCompiledAddress,item->mItem->mARMLiveAddress);
 					OutputDebugStringA(buffer);
 				}
 			}
 
-			std::pair<ResourceIndex::iterator,bool> ret = mResources[i].insert(std::pair<std::string,ResourceItem>(std::string(name),item));
+			std::pair<ResourceIndex::iterator,bool> ret = mResources[i].insert(std::pair<std::string,ResourceItem*>(std::string(name),item));
 			if (!ret.second)
 			{
 				// A resource exists with the same name, so unlink it and apply the new one
-				ResourceItem &toReplace = ret.first->second;
-				if (toReplace.mItem && toReplace.mItem->mARMCompiledAddress)
+				ResourceItem *toReplace = ret.first->second;
+				if (toReplace->mItem && toReplace->mItem->mARMCompiledAddress)
 				{
-					mARMAddressToBaseItem.erase(toReplace.mItem->mARMCompiledAddress);
+					mARMAddressToBaseItem.erase(toReplace->mItem->mARMCompiledAddress);
 				}
-				if (toReplace.mItem && toReplace.mItem->mARMLiveAddress)
+				if (toReplace->mItem && toReplace->mItem->mARMLiveAddress)
 				{
-					mARMAddressToBaseItem.erase(toReplace.mItem->mARMLiveAddress);
+					mARMAddressToBaseItem.erase(toReplace->mItem->mARMLiveAddress);
 				}
-				toReplace = item;
+				*toReplace = *item;
+				delete item;
 			}
 			numResourcesParsed++;
 		}
@@ -751,53 +758,57 @@ unsigned int ROEditor::ARMHeapAlloc(unsigned int size)
 	return ret;
 }
 
-bool ROEditor::SendEventToAllHandlers(const unsigned int event)
-{
-	// Send to all loaded handlers
-	ResourceIndex::iterator st = mResources[kHandler].begin();
-	while (st != mResources[kHandler].end())
-	{
-		DataChunk *handler = (DataChunk*) st->second.mItem;
-		unsigned int offset = 0;
-		if (handler && handler->mARMCompiledAddress && (handler->mSize >= 8) && ReadMemory(handler->mARMCompiledAddress,&offset,sizeof(offset)) && offset)
-		{
-			if (ARMCore::mDisassemble)
-			{
-				char buffer[256];
-				sprintf(buffer,"Running Event %d for handler '%s'\n",event, handler->mOriginalResourceName.c_str());
-				OutputDebugStringA(buffer);
-			}
-			SetPC(handler->mARMCompiledAddress + offset);
-			SetRegister(0,event);
-			SetRegister(4,mARMCosTableAddress);
-			SetRegister(5,mARMSinTableAddress);
-			// MPi: TODO: Need temp work area in R10
-			Execute();
-		}
-
-		st++;
-	}
-
-	return true;
-}
-
-bool ROEditor::StackedSendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame)
+bool ROEditor::SendEventToAllHandlers(const unsigned int event, const unsigned int applicationHandle)
 {
 	int registers[16];
 	for (int i = 0; i < 16; i++)
 	{
 		registers[i] = GetRegister(i);
 	}
-	bool ret = SendEventToWorldTemplate(systemWorld, world, temp, 7, frame);
+
+	// Send to all loaded handlers
+	ResourceIndex::iterator st = mResources[ResourceItem::kHandler].begin();
+	while (st != mResources[ResourceItem::kHandler].end())
+	{
+		DataChunk *handler = (DataChunk*) st->second->mItem;
+		unsigned int offset = 0;
+		if (handler && handler->mARMCompiledAddress && (handler->mSize >= 8) && ReadMemory(handler->mARMCompiledAddress,&offset,sizeof(offset)) && offset)
+		{
+			if (applicationHandle == 0 || (applicationHandle == handler->mResource->mLoadedByIteration))
+			{
+				if (ARMCore::mDisassemble)
+				{
+					char buffer[256];
+					sprintf(buffer, "Running Event %d for handler '%s'\n", event, handler->mOriginalResourceName.c_str());
+					OutputDebugStringA(buffer);
+				}
+				SetPC(handler->mARMCompiledAddress + offset);
+				SetRegister(0, event);
+				SetRegister(4, mARMCosTableAddress);
+				SetRegister(5, mARMSinTableAddress);
+				// MPi: TODO: Need temp work area in R10
+				Execute();
+			}
+		}
+
+		st++;
+	}
+
 	for (int i = 0; i < 16; i++)
 	{
 		SetRegister(i, registers[i]);
 	}
-	return ret;
+	return true;
 }
 
 bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World *world, World::WorldTemplate * temp, const unsigned int event, const bool frame)
 {
+	int registers[16];
+	for (int i = 0; i < 16; i++)
+	{
+		registers[i] = GetRegister(i);
+	}
+
 	if ((event == 4) && temp->mSysInitEventSent)
 	{
 		return false;
@@ -887,6 +898,11 @@ bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World 
 		}
 
 	}
+
+	for (int i = 0; i < 16; i++)
+	{
+		SetRegister(i, registers[i]);
+	}
 	return true;
 }
 
@@ -932,6 +948,7 @@ bool ROEditor::SendEventToRunningObjects(const unsigned int event, const bool fr
 			}
 		}
 	}
+
 	return true;
 }
 

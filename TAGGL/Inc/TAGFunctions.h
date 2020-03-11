@@ -16,7 +16,8 @@ enum
 	kTAGFunctionDivide01			= 0x81b0,
 	kTAGFunctionDivide02			= 0x81b4,
 	kTAGFunctionDivide12			= 0x81b8,
-	kTAGFunctionDivide32			= 0x81bc
+	kTAGFunctionDivide32			= 0x81bc,
+	kTAGFunctionReportError			= 0x8200
 };
 
 }

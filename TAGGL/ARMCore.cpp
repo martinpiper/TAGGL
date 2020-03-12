@@ -4,6 +4,7 @@
 #include "TAGGL/Inc/ARMCore.h"
 #include "ARCEmu/armemul.h"
 #include "ARCEmu/decode.h"
+#include "ARCEmu/syscall.h"
 
 using namespace TAGGL;
 using namespace simit;
@@ -109,6 +110,7 @@ bool ARMCore::Execute(const int cycles)
 	{
 		arm_inst_t inst;
 		word_t addr = sTheARM.get_pc();
+		gLastSysCall = 0;
 
 		inst = sTheARM.fetch_inst_user(sTheARM.get_pc());
 
@@ -133,6 +135,19 @@ bool ARMCore::Execute(const int cycles)
 		}
 
 		sTheARM.execute_user(inst, sTheARM.get_pc());
+		
+		if (gLastSysCall != 0)
+		{
+			OutputDebugStringA("gLastSysCall\n");
+			if (gLastSysCall == 0x2000c)
+			{
+				char memory[256];
+				ReadMemory(GetRegister(1), memory, sizeof(memory));
+				ReadMemory(GetRegister(6), memory, sizeof(memory));
+				int i = 0;
+			}
+			OutputDebugStringA("gLastSysCall end\n");
+		}
 
 		if (sTheARM.mem->get_last_fault() != MEM_NO_FAULT)
 		{

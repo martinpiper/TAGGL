@@ -35,6 +35,7 @@ typedef simit::arm_emulator armulator;
 extern void sc_impl(armulator *emu, arm_inst_t inst);
 extern char *sc_disasm(arm_inst_t inst, target_addr_t pc, char *buf);
 extern void do_syscall(armulator *emu, arm_inst_t inst);
+extern int gLastSysCall;
 
 #define impl_sc sc_impl
 #define disasm_sc sc_disasm

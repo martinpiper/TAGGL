@@ -40,6 +40,14 @@
 	* Need to implement: 00014a7c : ef02000c swi 2000c
 		http://www.wra1th.plus.com/lua/diy/Riscos.html
 		swi   0x2000c       @  XOS_GBPB
+		https://www.riscosopen.org/wiki/documentation/show/OS_GBPB
+		do_syscall
+		Now intercepted SWIs, see: OutputDebugStringA("gLastSysCall\n");
+		https://www.riscosopen.org/wiki/documentation/show/OS_GBPB%2012
+		if (gLastSysCall == 0x2000c)
+		Seeing: +		memory	0x00efefe4 "BHPdata:"	char[0x00000100]
+		* Need to implement a proper callback for processing SWIs
+
 
 
 

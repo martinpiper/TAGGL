@@ -47,12 +47,15 @@ static char *arm_get_syscall_name(int num)
 
 #define SYSCALL_NUM ((inst<<8)>>8)
 
+int gLastSysCall = 0;
+
 void do_syscall(armulator *emu, arm_inst_t inst)
 {
 	int syscall_num;
 	bool ret = false;
 	
 	syscall_num	= SYSCALL_NUM & 0xff;
+	gLastSysCall = SYSCALL_NUM;
 	if (emu->is_verbose())
 		fprintf(stderr, "got a system call (number : %u, name : %s)\n", syscall_num, arm_get_syscall_name(syscall_num));
 		

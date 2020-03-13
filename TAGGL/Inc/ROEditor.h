@@ -87,6 +87,9 @@ public:
 
 protected:
 	virtual bool CallbackTAGFunction(const unsigned int address);
+	virtual bool CallbackSWI(const unsigned int swi);
+
+	void TidyRISCOSPath(std::string &riscosPath);
 
 	void CreateARMResource(BaseItem *item, const char *name);
 

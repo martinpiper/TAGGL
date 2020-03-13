@@ -138,15 +138,7 @@ bool ARMCore::Execute(const int cycles)
 		
 		if (gLastSysCall != 0)
 		{
-			OutputDebugStringA("gLastSysCall\n");
-			if (gLastSysCall == 0x2000c)
-			{
-				char memory[256];
-				ReadMemory(GetRegister(1), memory, sizeof(memory));
-				ReadMemory(GetRegister(6), memory, sizeof(memory));
-				int i = 0;
-			}
-			OutputDebugStringA("gLastSysCall end\n");
+			CallbackSWI(gLastSysCall);
 		}
 
 		if (sTheARM.mem->get_last_fault() != MEM_NO_FAULT)
@@ -190,5 +182,10 @@ bool ARMCore::CallbackTAGFunction(const unsigned int address)
 {
 	// For debugging just return
 	SetRegister(15,GetRegister(14));
+	return true;
+}
+
+bool ARMCore::CallbackSWI(const unsigned int swi)
+{
 	return true;
 }

@@ -16,7 +16,7 @@
 
 
 
-* "Data\BHPOutput\Control" + "Data\BHPOutput\Game" + "Data\BHPOutput\Track2" needs: CallbackTAGFunction $8124
+* "Data\BHPOutput\Control" + "Data\BHPOutput\Titles" + "Data\BHPOutput\Game" + "Data\BHPOutput\Track2" needs: CallbackTAGFunction $8124
 	&24- Object Transform (rotate then add wld x/y/z)
 
 
@@ -47,6 +47,16 @@
 		if (gLastSysCall == 0x2000c)
 		Seeing: +		memory	0x00efefe4 "BHPdata:"	char[0x00000100]
 		* Need to implement a proper callback for processing SWIs
+		* Done OS_GBPB
+	* Now need: CallbackTAGFunction 0x8124
+	I see spinning cars with wheels, although the scale and position is wrong due to missing 0x8124
+
+	* http://www.riscos.com/support/developers/prm_index/numswilist.html
+		Seeing SWI 0x6 OS_Byte
+		https://www.riscosopen.org/wiki/documentation/show/OS_Byte
+		https://www.riscosopen.org/wiki/documentation/show/OS_Byte%20129
+		https://www.riscosopen.org/wiki/documentation/show/OS_Byte%20129%20(scan%20single)
+
 
 
 

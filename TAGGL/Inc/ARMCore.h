@@ -27,6 +27,7 @@ public:
 	void InitStack();
 
 	virtual bool CallbackTAGFunction(const unsigned int address);
+	virtual bool CallbackSWI(const unsigned int swi);
 
 	static bool mDisassemble;
 	static bool mDebuggingEnabled;

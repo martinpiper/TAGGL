@@ -10,6 +10,7 @@
 #include "TAGGL/Inc/Object.h"
 #include "TAGGL/Inc/DataChunk.h"
 #include "TAGGL/Inc/TAGFunctions.h"
+#include "RNLobby/Inc/ScanPath.h"
 
 using namespace TAGGL;
 using namespace RNReplicaNet;
@@ -234,13 +235,13 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 
 		case kTAGFunctionExecNew:
 		{
-			char name[17];
-			name[16] = '\0';
+			char name[257];
+			name[256] = '\0';
 			unsigned int r0 = GetRegister(0);
 			unsigned int r1 = GetRegister(1);
 			if (r0 == 0 && r1 != 0)
 			{
-				if (ReadMemory(r1, name, 16))
+				if (ReadMemory(r1, name, 256))
 				{
 					error = false;
 					if (ARMCore::mDebuggingEnabled)
@@ -256,14 +257,10 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 			else if (r0 == 0xffffffff && r1 != 0)
 			{
 				// : -1 : > 0 : load app data(R1 = filename) (R2 = crc word) : R0 = app handle : N:
-				if (ReadMemory(r1, name, 16))
+				if (ReadMemory(r1, name, 256))
 				{
 					std::string riscosPath = name;
-					size_t pos;
-					if ((pos = riscosPath.find_last_of(':')) != std::string::npos)
-					{
-						riscosPath = riscosPath.substr(pos + 1);
-					}
+					TidyRISCOSPath(riscosPath);
 					riscosPath = mRootDirectory + riscosPath;
 
 					if (ARMCore::mDebuggingEnabled)
@@ -306,8 +303,10 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 		}
 
 		case kTAGFunctionMiscOp:
+		case 0x8124:
 		case 0x814c:
 		case 0x8140:
+		case 0x8184:
 		case 0x81e0:
 		case 0x81e4:
 		case 0x81d0:
@@ -402,4 +401,100 @@ bool ROEditor::CallbackTAGFunction(const unsigned int address)
 		SetRegister(15,GetRegister(14) & ~kPSROverflow);
 	}
 	return true;
+}
+
+bool ROEditor::CallbackSWI(const unsigned int swi)
+{
+	if (ARMCore::mDebuggingEnabled)
+	{
+		OutputDebugStringA("gLastSysCall\n");
+	}
+	switch (swi)
+	{
+		default:
+			break;
+		case 0x2000c:
+		{
+			int os_gbpb_type = GetRegister(0);
+			if (os_gbpb_type == 12)
+			{
+				char directoryName[256];
+				ReadMemory(GetRegister(1), directoryName, sizeof(directoryName));
+				int numObjectsToRead = GetRegister(3);
+				int whereToStart = GetRegister(4);
+				int lengthOfBuffer = GetRegister(5);
+				char wildcardNameToMatch[256];
+				ReadMemory(GetRegister(6), wildcardNameToMatch, sizeof(wildcardNameToMatch));
+
+				assert(numObjectsToRead == 1);
+
+				std::string riscosPath = directoryName;
+				TidyRISCOSPath(riscosPath);
+				if (riscosPath.empty())
+				{
+					riscosPath = mRootDirectory;
+				}
+				else
+				{
+					riscosPath = mRootDirectory + riscosPath;
+					riscosPath += "\\";
+				}
+				std::string toSearch = riscosPath + wildcardNameToMatch;
+
+				std::list<RNLobby::ScanPath::Entry> result;
+				RNLobby::ScanPath scanPath;
+				scanPath.Start(toSearch.c_str(), result);
+
+				std::list<RNLobby::ScanPath::Entry>::iterator st = result.begin();
+				std::advance(st, whereToStart);
+
+				if (st == result.end())
+				{
+					SetRegister(3, 0);
+					SetRegister(4, -1);
+					// MPi: TODO: Set carry?
+				}
+				else
+				{
+					// The mmeory buffer format https://www.riscosopen.org/wiki/documentation/show/OS_GBPB%2012%20Buffer
+					DynamicMessageHelper os_gbpbBuffer;
+					os_gbpbBuffer.AddInteger(0);
+					os_gbpbBuffer.AddInteger(0);
+					os_gbpbBuffer.AddInteger((int)st->mSize);
+					os_gbpbBuffer.AddInteger(0); // Read access for user
+					os_gbpbBuffer.AddInteger(1); // File
+					os_gbpbBuffer.AddInteger(0xffd); // File type arbitrary data
+					std::string name = st->mName.substr(riscosPath.length());
+					os_gbpbBuffer.AddData(name.c_str(), name.length()+1);
+					WriteMemory(GetRegister(2), os_gbpbBuffer.GetBuffer(), os_gbpbBuffer.GetSize());
+					st++;
+					if (st == result.end())
+					{
+						SetRegister(4, -1);
+					}
+					else
+					{
+						SetRegister(4, whereToStart + 1);
+					}
+				}
+			}
+			break;
+		}
+	}
+	if (ARMCore::mDebuggingEnabled)
+	{
+		OutputDebugStringA("gLastSysCall end\n");
+	}
+
+	return true;
+}
+
+void TAGGL::ROEditor::TidyRISCOSPath(std::string &riscosPath)
+{
+	size_t pos;
+	if ((pos = riscosPath.find_last_of(':')) != std::string::npos)
+	{
+		riscosPath = riscosPath.substr(pos + 1);
+	}
+	std::replace(riscosPath.begin(), riscosPath.end(), '.', '\\');
 }

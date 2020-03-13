@@ -908,10 +908,11 @@ bool ROEditor::SendEventToWorldTemplate(System::SystemWorld *systemWorld, World 
 
 bool ROEditor::SendEventToRunningObjects(const unsigned int event, const bool frame)
 {
+	System *theSystem = mCurrentSystem;
 	if (mCurrentSystem)
 	{
 		std::list<System::SystemWorld>::iterator st = mCurrentSystem->mWorlds.begin();
-		while (st != mCurrentSystem->mWorlds.end())
+		while (theSystem == mCurrentSystem && st != mCurrentSystem->mWorlds.end())
 		{
 			System::SystemWorld *systemWorld = &(*st);
 			if (!systemWorld->mNoHandlerEvents)
@@ -922,7 +923,7 @@ bool ROEditor::SendEventToRunningObjects(const unsigned int event, const bool fr
 				{
 					std::list<World::WorldTemplate*>::iterator st;
 					st = world->mTemplates.begin();
-					while (st != world->mTemplates.end())
+					while (theSystem == mCurrentSystem && st != world->mTemplates.end())
 					{
 						World::WorldTemplate *temp = *st++;
 

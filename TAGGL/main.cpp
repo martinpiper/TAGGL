@@ -238,6 +238,8 @@ void init(void)
 	DynamicMessageHelper file;
 	file.Read("Data\\BHPOutput\\Control",true);
 	gGame.ReadOutput(file);
+	file.Read("Data\\BHPOutput\\Titles", true);
+	gGame.ReadOutput(file);
 	file.Read("Data\\BHPOutput\\Game",true);
 	gGame.ReadOutput(file);
 	file.Read("Data\\BHPOutput\\Track2",true);

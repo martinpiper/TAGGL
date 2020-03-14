@@ -1,3 +1,22 @@
+* 3DRotLibE
+	angshift=8
+	but if "saonly" then it can be 1<<30
+	3DLib-G
+
+	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\TAGdefs,ffb
+		angshift=12            : use these for BHP!		angchg=4		angshift=8                 : use these for cobalt seed!		angchg=1		angcount=360*angchg		angchgs=LN(angchg)/LN(2)	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\Library,ffb
+		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\GameLib,ffb
+		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\3DLib-G,ffb
+			saonly does equal TRUE because of: only strongARM and ARM7500 - for BHP
+		Uses C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\3DRotG64,ffb
+			rotateobject
+		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\UsefulLib,ffb
+			costable, sintable
+
+
+
+
+
 * At the moment "gGame.InitStack();" is needed to reset the stack each frame, some handlers/operations do not seem to be popping all their stacked data
 	SendEventToWorldTemplate() can warn if the stack is not being popped correctly to aid in debugging why
 		It is probably linked to some exceptions being thrown due to "screen memory" access, or SWIs

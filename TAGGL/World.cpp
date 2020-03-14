@@ -25,9 +25,9 @@ void World::Render(void)
 		{
 			glPushMatrix();
 			glTranslatef(float(temp->mIPosition.mX) / 256.0f , float(temp->mIPosition.mY) / 256.0f, -float(temp->mIPosition.mZ) / 256.0f);
-			glRotatef(-(360.0f * float(temp->mIRotation.mY)) / float(kAngCount), 0.0, 1.0, 0.0);
-			glRotatef(-(360.0f * float(temp->mIRotation.mX)) / float(kAngCount), 1.0, 0.0, 0.0);
-			glRotatef(-(360.0f * float(temp->mIRotation.mZ)) / float(kAngCount), 0.0, 0.0, 1.0);
+			glRotatef(-(kAngCount * float(temp->mIRotation.mY)) / float(kAngCount), 0.0, 1.0, 0.0);
+			glRotatef(-(kAngCount * float(temp->mIRotation.mX)) / float(kAngCount), 1.0, 0.0, 0.0);
+			glRotatef(-(kAngCount * float(temp->mIRotation.mZ)) / float(kAngCount), 0.0, 0.0, 1.0);
 			temp->mTemplate->Render(float(temp->mIScale.mX) / 256.0f , float(temp->mIScale.mY) / 256.0f, float(temp->mIScale.mZ) / 256.0f);
 			glPopMatrix();
 		}

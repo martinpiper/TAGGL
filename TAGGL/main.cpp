@@ -182,6 +182,7 @@ void init(void)
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, sizeX, sizeY, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 
+	// Read the command line, or read the BHP files
 #if 1
 	// Read data files from the command line
 	DynamicMessageHelper file;

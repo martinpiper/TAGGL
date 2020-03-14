@@ -102,18 +102,18 @@ ROEditor::ROEditor() : mCurrentSystem(0) , mNeedToSendSystemInits(true)
 	WriteMemory(0x81f8,&address,sizeof(address));
 
 	// These 4 and 4096 magic values seem to work for BHP, but they don't work for Cobalt Seed
-	mCosTable.Allocate(sizeof(int)*kAngCount*4);
-	mSinTable.Allocate(sizeof(int)*kAngCount*4);
+	mCosTable.Allocate(sizeof(int)*kAngCount);
+	mSinTable.Allocate(sizeof(int)*kAngCount);
 	int i;
-	for (i = 0 ; i < kAngCount*4 ; i++)
+	for (i = 0 ; i < kAngCount; i++)
 	{
-		((int *)mCosTable.mData)[i] = cos((double(i) * 2.0f * M_PI) / double(kAngCount)) * 4096;
-		((int *)mSinTable.mData)[i] = sin((double(i) * 2.0f * M_PI) / double(kAngCount)) * 4096;
+		((int *)mCosTable.mData)[i] = cos((double(i) * 2.0f * kAngChg * M_PI) / double(kAngCount)) * (1 << kAngShift);
+		((int *)mSinTable.mData)[i] = sin((double(i) * 2.0f * kAngChg * M_PI) / double(kAngCount)) * (1 << kAngShift);
 	}
-	mARMCosTableAddress = ARMHeapAlloc(sizeof(int)*kAngCount*4);
-	WriteMemory(mARMCosTableAddress, mCosTable.mData, sizeof(int)*kAngCount*4);
-	mARMSinTableAddress = ARMHeapAlloc(sizeof(int)*kAngCount*4);
-	WriteMemory(mARMSinTableAddress, mSinTable.mData, sizeof(int)*kAngCount*4);
+	mARMCosTableAddress = ARMHeapAlloc(sizeof(int)*kAngCount);
+	WriteMemory(mARMCosTableAddress, mCosTable.mData, sizeof(int)*kAngCount);
+	mARMSinTableAddress = ARMHeapAlloc(sizeof(int)*kAngCount);
+	WriteMemory(mARMSinTableAddress, mSinTable.mData, sizeof(int)*kAngCount);
 }
 
 ROEditor::~ROEditor()

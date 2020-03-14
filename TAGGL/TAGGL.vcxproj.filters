@@ -217,5 +217,14 @@
     <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\Library">
       <Filter>Original sources</Filter>
     </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\UsefulLib">
+      <Filter>Original sources</Filter>
+    </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\3DLib-G">
+      <Filter>Original sources</Filter>
+    </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\3DRotG64">
+      <Filter>Original sources</Filter>
+    </None>
   </ItemGroup>
 </Project>

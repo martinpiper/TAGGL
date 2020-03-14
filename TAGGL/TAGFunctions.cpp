@@ -413,6 +413,14 @@ bool ROEditor::CallbackSWI(const unsigned int swi)
 	{
 		default:
 			break;
+		case 0x6:
+		{
+			if ((rand() & 3) == 0)
+			{
+				SetRegister(1, 0xff);
+			}
+			break;
+		}
 		case 0x2000c:
 		{
 			int os_gbpb_type = GetRegister(0);

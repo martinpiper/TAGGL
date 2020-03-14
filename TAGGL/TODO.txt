@@ -12,6 +12,19 @@
 			rotateobject
 		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\UsefulLib,ffb
 			costable, sintable
+		Hmm for the BHP TAGcode, how was it really assembled?
+			http://www.riscos.com/support/developers/prm/debugger.html
+			F12
+			debug
+			load filename...
+				For &54 - TAG Misc Operation
+			memoryi 8154
+			memoryi 83c8
+			$8414 indicates R1=1440 R2=12
+		Understand why: cos((double(i) * 2.0f * kAngChg * M_PI) / double(kAngCount))
+			* Note: However the cable cars on Track2 do follow their cables with this configuration
+		Which differs to: C%!(T%*4)=FNint(M%*COS(RAD(T%*360/N%)))
+
 
 
 

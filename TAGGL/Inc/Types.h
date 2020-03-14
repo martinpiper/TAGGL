@@ -6,9 +6,11 @@
 namespace TAGGL
 {
 
-enum
-{
-	kAngCount = 360
+	enum
+	{
+		kAngChg = 4,
+		kAngCount = 360 * kAngChg,
+		kAngShift = 12
 };
 
 struct FVector3

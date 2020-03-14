@@ -95,7 +95,7 @@ Loaded Templates need TAG memory allocated. Do this after all the templates have
 
 
 
-* "Data\TestAnim" : OK
+* "Data\TestAnim1" : OK
 
 
 * "Data\BHPOutput\Track2" : OK, on its own the surfboards on the beach move around nicely

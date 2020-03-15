@@ -1,10 +1,16 @@
+* According to CtrlApp, the "frm_sys_startup" (04 (F) = system startup        (when new system is started)) might need to be sent again to all objects/handlers when a new system is loaded.
+	Even for those objects that are still active after kTAGFunctionExecNew
+
+
+
+
 * 3DRotLibE
 	angshift=8
 	but if "saonly" then it can be 1<<30
 	3DLib-G
 
 	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\TAGdefs,ffb
-		angshift=12            : use these for BHP!		angchg=4		angshift=8                 : use these for cobalt seed!		angchg=1		angcount=360*angchg		angchgs=LN(angchg)/LN(2)	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\Library,ffb
+		angshift=12            : use these for BHP!		angchg=4		angshift=8                 : use these for cobalt seed!		angchg=1		angcount=360*angchg		angchgs=LN(angchg)/LN(2)	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\Library,ffb
 		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\GameLib,ffb
 		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\3DLib-G,ffb
 			saonly does equal TRUE because of: only strongARM and ARM7500 - for BHP

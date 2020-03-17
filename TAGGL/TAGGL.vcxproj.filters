@@ -226,5 +226,8 @@
     <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\3DRotG64">
       <Filter>Original sources</Filter>
     </None>
+    <None Include="..\..\..\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\TAGdefs">
+      <Filter>Original sources</Filter>
+    </None>
   </ItemGroup>
 </Project>

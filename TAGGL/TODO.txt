@@ -1,5 +1,13 @@
 * According to CtrlApp, the "frm_sys_startup" (04 (F) = system startup        (when new system is started)) might need to be sent again to all objects/handlers when a new system is loaded.
 	Even for those objects that are still active after kTAGFunctionExecNew
+	C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\SourceText\GameLib
+	Check: exec_game
+	Also check usage of ea_sendappevent and ea_sendevent
+	Note:	BL ea_syscheck                            ; check for new system startup
+			BL ea_check_exit                          ; check for exit
+			BEQ exg3                                  ; if yes, exit...
+
+
 
 
 
@@ -10,7 +18,13 @@
 	3DLib-G
 
 	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\TAGdefs,ffb
-		angshift=12            : use these for BHP!		angchg=4		angshift=8                 : use these for cobalt seed!		angchg=1		angcount=360*angchg		angchgs=LN(angchg)/LN(2)	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\Library,ffb
+		angshift=12            : use these for BHP!
+		angchg=4
+		angshift=8                 : use these for cobalt seed!
+		angchg=1
+		angcount=360*angchg
+		angchgs=LN(angchg)/LN(2)
+	* C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\Library,ffb
 		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\Source\GameLib,ffb
 		Uses: C:\Backups\OldMachines\OldMachineBackup\D\RPCEmu\hostfs\TAG\!Holograph\3DLib\3DLib-G,ffb
 			saonly does equal TRUE because of: only strongARM and ARM7500 - for BHP

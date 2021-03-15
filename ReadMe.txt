@@ -34,3 +34,9 @@ RPCEmu-Interpreter.exe
 Command line arguments:
 "Data\Demo"
 "Data\TestAnim1"
+"Data\TestAnim2"
+"Data\MIME"
+"Data\BHPOutput\Control"
+"Data\Road,ffd"
+"Data\Road2,ffd"
+"Data\TankGame,ffd"
